@@ -1,0 +1,17 @@
+{
+
+  "folders" : {
+    "root" : "easy-csv/apple-school-manager",
+    "temp" : "delete"
+  }
+
+  "process" : {
+    "name" : "target",
+    "targets" : [
+      {"sheet" : "locations", "range" : "A:B"},
+      {"sheet" : "students", "range" : "A:J"},
+      {"sheet" : "courses", "range" : "A:D"}
+    ]
+  }
+
+}
