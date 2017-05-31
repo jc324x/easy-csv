@@ -23,3 +23,8 @@ folder.createFile(Utilities.zip(folder.getFiles().map(function(f){
   return f.getBlob().setName(n);
 }), 'newFiles.zip'));
  
+---
+
+config
+input
+output

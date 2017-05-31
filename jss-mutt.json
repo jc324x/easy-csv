@@ -1,0 +1,7 @@
+{
+   "project folder":"easy-csv/apple-school-manager",
+   "process":"expand",
+   "headers":"chop",
+   "product":"files",
+   "temp":"delete"
+}

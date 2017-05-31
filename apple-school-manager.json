@@ -1,17 +1,33 @@
 {
-
-  "folders" : {
-    "root" : "easy-csv/apple-school-manager",
-    "temp" : "delete"
-  }
-
-  "process" : {
-    "name" : "target",
-    "targets" : [
-      {"sheet" : "locations", "range" : "A:B"},
-      {"sheet" : "students", "range" : "A:J"},
-      {"sheet" : "courses", "range" : "A:D"}
-    ]
-  }
-
+   "project folder":"easy-csv/apple-school-manager",
+   "process":"target // expand // complete",
+   "headers":"keep // chop",
+   "targets":[
+      {
+         "sheet":"locations",
+         "range":"A:B"
+      },
+      {
+         "sheet":"students",
+         "range":"A:J"
+      },
+      {
+         "sheet":"courses",
+         "range":"A:D"
+      },
+      {
+         "sheet":"classes",
+         "range":"A:E"
+      },
+      {
+         "sheet":"rosters",
+         "range":"A:C"
+      },
+      {
+         "sheet":"staff",
+         "range":"A:H"
+      }
+   ],
+   "product":"zip // files",
+   "temp":"delete"
 }
