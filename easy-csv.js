@@ -99,14 +99,13 @@ function createVerifyPath(path) {
 }
 
 function runScript() {
-  var project_folder, process, headers, product, temp;
-  var targets = [];
+  var projectFolder, process, keepHeaders, zipOutput, deleteTemp;
+  var targetsArray = [];
 
   try {
-    project_folder = config.project_folder
-
+    projectFolder = config.projectFolder;
+    Logger.log(projectFolder);
    } catch(e) {
 
    }
-
 }
