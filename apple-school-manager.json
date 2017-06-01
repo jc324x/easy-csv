@@ -1,8 +1,8 @@
 {
-   "project folder":"easy-csv/apple-school-manager",
-   "process":"target // expand // complete",
-   "headers":"keep // chop",
-   "targets":[
+   "projectFolder":"easy-csv/apple-school-manager",
+   "runProcess":"target // expand // complete",
+   "keepHeaders":"true",
+   "targetsArray":[
       {
          "sheet":"locations",
          "range":"A:B"
@@ -28,6 +28,6 @@
          "range":"A:H"
       }
    ],
-   "product":"zip // files",
-   "temp":"delete"
+   "zipOutput":"true",
+   "deleteTemp":"true"
 }

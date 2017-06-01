@@ -98,10 +98,15 @@ function createVerifyPath(path) {
   return fldr;
 }
 
-function run() {
+function runScript() {
+  var project_folder, process, headers, product, temp;
+  var targets = [];
 
-  Logger.log(config);
+  try {
+    project_folder = config.project_folder
+
+   } catch(e) {
+
+   }
 
 }
-
-
