@@ -1,6 +1,6 @@
 {
    "projectFolder":"easy-csv/apple-school-manager",
-   "process":"target // expand // complete",
+   "process":"targeted",
    "keepHeaders":"true",
    "targetsArray":[
       {

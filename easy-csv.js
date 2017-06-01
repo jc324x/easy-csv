@@ -104,13 +104,22 @@ function createVerifyPath(path) {
 function runScript() {
   var ui = SpreadsheetApp.getUi();
 
-  var projectFolder, process, keepHeaders, zipOutput, deleteTemp;
-  var targetsArray = [];
+  var projectFolder = config.projectFolder;
+  var process       = config.process;
+  var keepHeaders   = config.keepHeaders;
+  var targetsArray  = config.targetsArray;
+  var zipOutput     = config.zipOutput;
+  var deleteTemp    = config.deleteTemp;
 
-  try {
-    projectFolder = config.projectFolder;
-   } catch(e) {
-     ui.alert(e);
-     Logger.log("project folder not defined");
-   }
+  switch(process) {
+      case target:
+        Logger.log("targeted");
+        break;
+      case expand:
+        Logger.log("expanding");
+        break;
+      default:
+        Logger.log("complete");
+  }
+
 }
