@@ -1,8 +1,8 @@
 {
    "projectFolder":"easy-csv/apple-school-manager",
-   "process":"targeted",
+   "runProcess":"exportRanges",
    "keepHeaders":"true",
-   "targetsArray":[
+   "targetConfig":[
       {
          "sheet":"locations",
          "range":"A:B"

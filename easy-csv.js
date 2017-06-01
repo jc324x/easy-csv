@@ -1,7 +1,16 @@
+// config 
+
+var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
+// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/broken-apple-school-manager.json");
+
+// global
+
+// global variables here
+
 // https://github.com/jcodesmn/google-apps-script-cheat-sheet 
 
-// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
-var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/broken-apple-school-manager.json");
+// files and folders
+
 
 // json
 
@@ -105,21 +114,28 @@ function runScript() {
   var ui = SpreadsheetApp.getUi();
 
   var projectFolder = config.projectFolder;
-  var process       = config.process;
+  var runProcess    = config.runProcess;
   var keepHeaders   = config.keepHeaders;
-  var targetsArray  = config.targetsArray;
+  var targetConfig  = config.targetConfig;
   var zipOutput     = config.zipOutput;
   var deleteTemp    = config.deleteTemp;
 
-  switch(process) {
-      case target:
-        Logger.log("targeted");
-        break;
-      case expand:
-        Logger.log("expanding");
-        break;
-      default:
-        Logger.log("complete");
+  switch(runProcess) {
+    case "exportSpreadsheet":
+      Logger.log("exportSpreadsheet");
+      break;
+    case "exportSheets":
+      Logger.log("exportSheets");
+      break;
+    case "exportRanges":
+      Logger.log("exportRanges");
+      break;
+    case "expandFromFirstColumn":
+      Logger.log("expandFromFirstColumn");
+      break;
+    default:
+      Logger.log("please check your configuration and try again");
   }
 
 }
+
