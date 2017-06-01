@@ -99,6 +99,8 @@ function createVerifyPath(path) {
 }
 
 function runScript() {
+  var ui = SpreadsheetApp.getUi();
+
   var projectFolder, process, keepHeaders, zipOutput, deleteTemp;
   var targetsArray = [];
 
@@ -106,6 +108,6 @@ function runScript() {
     projectFolder = config.projectFolder;
     Logger.log(projectFolder);
    } catch(e) {
-
+     ui.alert(e);
    }
 }
