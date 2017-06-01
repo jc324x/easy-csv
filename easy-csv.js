@@ -1,6 +1,7 @@
 // https://github.com/jcodesmn/google-apps-script-cheat-sheet 
 
-var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
+// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
+var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/broken-apple-school-manager.json");
 
 // json
 
@@ -98,6 +99,8 @@ function createVerifyPath(path) {
   return fldr;
 }
 
+// script
+
 function runScript() {
   var ui = SpreadsheetApp.getUi();
 
@@ -106,8 +109,8 @@ function runScript() {
 
   try {
     projectFolder = config.projectFolder;
-    Logger.log(projectFolder);
    } catch(e) {
      ui.alert(e);
+     Logger.log("project folder not defined");
    }
 }
