@@ -123,7 +123,7 @@ function runScript() {
       break;
     case "exportSheets":
       // project folder
-      createVerifyPath(projectFolder);
+      createVerifyPath(projectPath);
       
     // get all sheets in spreadsheet? at least to get the count...
 

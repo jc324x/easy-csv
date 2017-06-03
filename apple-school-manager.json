@@ -1,5 +1,5 @@
 {
-   "projectPath":"easy-csv/apple-school-manager",
+   "projectPath":"easy-csv-exports/apple-school-manager",
    "process":"exportSheets",
    "keepHeaders":"true",
    "targets":[
