@@ -2,6 +2,7 @@
 
 var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
 // var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/broken-apple-school-manager.json");
+// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
 
 // global
 
@@ -110,24 +111,24 @@ function createVerifyPath(path) {
 // script
 
 function runScript() {
-  var projectFolder = config.projectFolder;
-  var process       = config.process;
-  var keepHeaders   = config.keepHeaders;
-  var targets       = config.targets;
-  var zipOutput     = config.zipOutput;
+  var projectPath = config.projectPath;
+  var process     = config.process;
+  var keepHeaders = config.keepHeaders;
+  var targets     = config.targets;
+  var zipOutput   = config.zipOutput;
 
   switch(process) {
     case "exportSpreadsheet":
-      Logger.log("exportSpreadsheet");
+      // essentially exportSheets but with less config
       break;
     case "exportSheets":
-      Logger.log("exportSheets");
-      break;
-    case "exportRanges":
-      Logger.log("exportRanges");
+      // project folder
+      createVerifyPath(projectFolder);
+      
+    // get all sheets in spreadsheet? at least to get the count...
+
       break;
     case "expandSheet":
-      Logger.log("expandFromFirstColumn");
       break;
     default:
       Logger.log("please check your configuration and try again");

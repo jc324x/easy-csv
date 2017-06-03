@@ -1,5 +1,5 @@
 {  
-   "projectFolder":"easy-csv/jss-mutt",
+   "projectPath":"easy-csv/jss-mutt",
    "process":"expandSheet",
    "keepHeaders":"false",
    "zipOutput":"false",
