@@ -1,7 +1,10 @@
-{
-   "project folder":"easy-csv/apple-school-manager",
-   "process":"expand",
-   "headers":"chop",
-   "product":"files",
-   "temp":"delete"
+{  
+   "projectFolder":"easy-csv/jss-mutt",
+   "process":"expandSheet",
+   "keepHeaders":"false",
+   "zipOutput":"false",
+   "target":{  
+      "sheet":"jss-mutt",
+      "range":"A:J"
+   }
 }

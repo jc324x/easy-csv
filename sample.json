@@ -1,10 +1,26 @@
+// expandSheet
+
+{
+   "projectFolder":"easy-csv/jss-mutt",
+   "process":"expandSheet",
+   "keepHeaders":"false",
+   "zipOutput":"false",
+   "target": {
+       "sheet":"jss-mutt",
+       "range": "A:J"
+     }
+   
+}
+
+// exportSheets
+
 {
    "projectFolder":"easy-csv/apple-school-manager",
    "process":"exportSheets",
    "keepHeaders":"true",
    "targets":[
       {
-         "sheet":"locations"
+         "sheet":"locations",
       },
       {
          "sheet":"students",
@@ -27,5 +43,7 @@
          "range":"A:H"
       }
    ],
-   "zipOutput":"true"
+   "zipOutput":"true",
 }
+
+// export entire spreadsheet with exportSheets and (sheets[0] === 0) ?

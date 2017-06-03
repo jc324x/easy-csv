@@ -11,7 +11,6 @@ var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/eas
 
 // files and folders
 
-
 // json
 
 function jsonFromUrl(url) {
@@ -111,16 +110,13 @@ function createVerifyPath(path) {
 // script
 
 function runScript() {
-  var ui = SpreadsheetApp.getUi();
-
   var projectFolder = config.projectFolder;
-  var runProcess    = config.runProcess;
+  var process       = config.process;
   var keepHeaders   = config.keepHeaders;
-  var targetConfig  = config.targetConfig;
+  var targets       = config.targets;
   var zipOutput     = config.zipOutput;
-  var deleteTemp    = config.deleteTemp;
 
-  switch(runProcess) {
+  switch(process) {
     case "exportSpreadsheet":
       Logger.log("exportSpreadsheet");
       break;
@@ -130,7 +126,7 @@ function runScript() {
     case "exportRanges":
       Logger.log("exportRanges");
       break;
-    case "expandFromFirstColumn":
+    case "expandSheet":
       Logger.log("expandFromFirstColumn");
       break;
     default:
