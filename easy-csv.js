@@ -223,34 +223,25 @@ function numCol(number) {
 
 function A1Object(sheetObj, a1Notation) {
   var a1;
-  var dataRange = sheetObj.getDataRange().getA1Notation();
-
-  // Logger.log("data range");
-  // Logger.log(dataRange);
+  var dr = sheetObj.getDataRange().getA1Notation();
 
   if (typeof a1Notation === "undefined") {
-    a1 = dataRange;
+    a1 = dr;
   } else {
     a1 = a1Notation;
   }
 
-  // Logger.log("a1");
-  // Logger.log(a1);
-
-  var lColNum   = sheetObj.getLastColumn();
-  var lRow      = sheetObj.getLastRow();
-  var split     = a1.split(":");
+  var lColNum  = sheetObj.getLastColumn();
+  var lRow     = sheetObj.getLastRow();
+  var split    = a1.split(":");
   var startCol = colNum(split[0].match(/\D/g,'').toString());
   var startRow = parseInt(split[0].match(/\d+/g));
-  Logger.log("start Row is " + startRow);
   var endCol   = colNum(split[1].match(/\D/g,'').toString());
   var endRow   = parseInt(split[1].match(/\d+/g));
 
   if (isNaN(startRow)) {
     startRow = 1;
   }
-
-  Logger.log("start Row is " + startRow);
 
   if (isNaN(endCol)) {
     endCol = lColNum;
@@ -261,13 +252,9 @@ function A1Object(sheetObj, a1Notation) {
   }
 
   this.startCol = startCol;
-  Logger.log(this.startCol);
   this.startRow = startRow;
-  Logger.log(this.startRow);
   this.endCol   = endCol;
-  Logger.log(this.endCol);
   this.endRow   = endRow;
-  Logger.log(this.endRow);
 
   this.chopHeaders = function() {
     this.startRow += 1;
@@ -314,11 +301,11 @@ function limitDataRange(sheetObj, a1Notation) {
 function testLimit() {
   var testSheet = ss.getSheetByName("students");
   // var testA = new A1Object(testSheet);
-  var testB = new A1Object(testSheet, "A:E");
-  // Logger.log(testA.returnA1());
-  // Logger.log(testA.returnArr());
-  Logger.log(testB.returnA1());
-  // Logger.log(testB.returnArr());
+  // var testB = new A1Object(testSheet, "A:E");
+  var testC = new A1Object(testSheet, "A10000:AA50");
+  Logger.log(testC.returnA1());
+  Logger.log(testC.returnArr());
+
 } 
 
 
