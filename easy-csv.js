@@ -245,9 +245,14 @@ function A1Object(sheetObj, a1Notation) {
 
   if (isNaN(endCol)) {
     endCol = lColNum;
+    Logger.log("NOT OK");
   }
 
   if (isNaN(endRow)) {
+    endRow = lRow;
+  }
+
+  if (endRow > lRow) {
     endRow = lRow;
   }
 
@@ -269,44 +274,23 @@ function A1Object(sheetObj, a1Notation) {
     return arr;
   };
 
-  this.returnA1 = function() {
+  this.getA1Notation = function() {
     return numCol(this.startCol) + this.startRow + ":" + numCol(this.endCol) + this.endRow;
   };
 } 
 
-function limitDataRange(sheetObj, a1Notation) {
-
-  var dataRange  = sheetObj.getDataRange().getA1Notation();
-  var lastRow    = sheetObj.getLastRow();
-  var lastColumn = sheetObj.getLastColumn();
-
-  var limitArr = [];
-  var dataArr  = [];
-
-  var limitSplit = a1Notation.split(":");
-  var dataSplit  = dataRange.split(":");
-
-  // translate A:J = A(last row):J(lastt row)
-
-    limitArr.push(colNum(limitSplit[0].match(/\D/g,'').toString()));
-    dataArr.push(colNum(dataSplit[0].match(/\D/g,'').toString()));
-    limitArr.push(parseInt(limitSplit[0].match(/\d+/g)));
-    dataArr.push(parseInt(dataSplit[0].match(/\d+/g)));
-
-  Logger.log(limitArr);
-  Logger.log(dataArr);
-
-} 
-
-function testLimit() {
-  var testSheet = ss.getSheetByName("students");
-  // var testA = new A1Object(testSheet);
-  // var testB = new A1Object(testSheet, "A:E");
-  var testC = new A1Object(testSheet, "A10000:AA50");
-  Logger.log(testC.returnA1());
-  Logger.log(testC.returnArr());
-
-} 
+function testingLimits(){
+  var sheet = ss.getSheetByName("students");
+  var sheetA1Object  = new A1Object(sheet);
+  var targetA1Object = new A1Object(sheet, "A:J1000)");
+  Logger.log(targetA1Object.getA1Notation());
+  Logger.log(targetA1Object.returnArr());
+  // targetA1Object.chopHeaders();
+  // Logger.log(targetA1Object.getA1Notation());
+  
+  // sheetA1Object.limitTo(targetA1Object);
+  // sheetA1Object.getA1Notation();
+}
 
 
 function runScript() {
@@ -323,9 +307,9 @@ function runScript() {
           sheet = ss.getSheetByName(sheet);
         }
 
-        var dataRange = sheet.getDataRange();
-        Logger.log(sheet.getName());
-        Logger.log(dataRange.getA1Notation());
+        // var dataRange = sheet.getDataRange();
+        // Logger.log(sheet.getName());
+        // Logger.log(dataRange.getA1Notation());
 
         if (typeof targets[i].range !== "undefined") {
           range = sheet.getRange(targets[i].range);
