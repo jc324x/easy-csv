@@ -221,7 +221,7 @@ function numCol(number) {
 // then convert into two arrays and do math (?)
 // then convert back to A1 notation
 
-function A1Object(sheetObj, a1Notation) {
+function Target(sheetObj, a1Notation) {
   var a1;
   var dr = sheetObj.getDataRange().getA1Notation();
 
@@ -243,16 +243,11 @@ function A1Object(sheetObj, a1Notation) {
     startRow = 1;
   }
 
-  if (isNaN(endCol)) {
+  if (isNaN(endCol) || (endCol > lColNum)) {
     endCol = lColNum;
-    Logger.log("NOT OK");
   }
 
-  if (isNaN(endRow)) {
-    endRow = lRow;
-  }
-
-  if (endRow > lRow) {
+  if (isNaN(endRow) || (endRow > lRow)) {
     endRow = lRow;
   }
 
@@ -265,15 +260,6 @@ function A1Object(sheetObj, a1Notation) {
     this.startRow += 1;
   };
 
-  this.returnArr = function() {
-    var arr = [];
-    arr.push(this.startCol);
-    arr.push(this.startRow);
-    arr.push(this.endCol);
-    arr.push(this.endRow);
-    return arr;
-  };
-
   this.getA1Notation = function() {
     return numCol(this.startCol) + this.startRow + ":" + numCol(this.endCol) + this.endRow;
   };
@@ -281,15 +267,14 @@ function A1Object(sheetObj, a1Notation) {
 
 function testingLimits(){
   var sheet = ss.getSheetByName("students");
-  var sheetA1Object  = new A1Object(sheet);
-  var targetA1Object = new A1Object(sheet, "A:J1000)");
-  Logger.log(targetA1Object.getA1Notation());
-  Logger.log(targetA1Object.returnArr());
-  // targetA1Object.chopHeaders();
-  // Logger.log(targetA1Object.getA1Notation());
-  
-  // sheetA1Object.limitTo(targetA1Object);
-  // sheetA1Object.getA1Notation();
+  var sheetA1Object  = new Target(sheet);
+  var hugeTarget = new Target(sheet, "A:ZZ1000");
+  var smallTarget = new Target(sheet, "A1:C5");
+  smallTarget.chopHeaders();
+  Logger.log(sheetA1Object.getA1Notation());
+  Logger.log(hugeTarget.getA1Notation());
+  Logger.log(smallTarget.getA1Notation());
+
 }
 
 
