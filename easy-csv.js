@@ -265,26 +265,17 @@ function Target(sheetObj, a1Notation) {
   };
 } 
 
-function testingLimits(){
-  var sheet = ss.getSheetByName("students");
-  var sheetA1Object  = new Target(sheet);
-  var hugeTarget = new Target(sheet, "A:ZZ1000");
-  var smallTarget = new Target(sheet, "A1:C5");
-  smallTarget.chopHeaders();
-  Logger.log(sheetA1Object.getA1Notation());
-  Logger.log(hugeTarget.getA1Notation());
-  Logger.log(smallTarget.getA1Notation());
-
+function rangeAsCSV(a1Notation) {
+  // -> empty sheet -> A1:`0`
 }
-
 
 function runScript() {
 
   switch(process) {
     case "exportSheets":
       var path = projectPath + " " + fmat12DT(); 
-      createVerifyPath(path);
-      // loop over targets, build form config options
+      var folder = createVerifyPath(path);
+
       for (var i = 0; i < targets.length; i++) {
         var sheet = targets[i].sheet;
 
@@ -292,20 +283,13 @@ function runScript() {
           sheet = ss.getSheetByName(sheet);
         }
 
-        // var dataRange = sheet.getDataRange();
-        // Logger.log(sheet.getName());
-        // Logger.log(dataRange.getA1Notation());
-
-        if (typeof targets[i].range !== "undefined") {
-          range = sheet.getRange(targets[i].range);
-          Logger.log(range.getA1Notation());
-        } else {
-          // need to figure out the range here...
-        }
-
-        // Logger.log(targetSheet.getSheetName());
-        // Logger.log(targetRange.getA1Notation());
-
+        var name = sheet.getName();
+        var target = new Target(sheet, targets[i].range);
+        Logger.log(name);
+        Logger.log(target.getA1Notation());
+        // var csv = rangeAsCSV(target);
+        // test that csv is not null...then create file
+        // folder.createFile(name, csv);
       } 
       break;
     default:
