@@ -74,6 +74,8 @@ function numCol(number) {
   }
 }
 
+// range
+
 function headerVal(rangeObj){
   var vals = rangeObj.getValues();
   var arr  = [];
@@ -84,14 +86,24 @@ function headerVal(rangeObj){
   return arr;
 }
 
-function arrObjFromSheet(sheetObj, hRow){
-  var lColNum = sheetObj.getLastColumn();
-  var lColABC = numCol(lColNum);
-  var lRow    = sheetObj.getLastRow();
-  var hRange  = sheetObj.getRange("A" + hRow + ":" + lColABC + hRow);
-  var headers = headerVal(hRange);
-  var vRange  = sheetObj.getRange("A" + (hRow +1) + ":" + lColABC + lRow);
-  return valByRow(vRange, headers);
+function numCol(num) {
+  var num = num - 1, chr;
+  if (num <= 25) {
+    chr = String.fromCharCode(97 + num).toUpperCase();
+    return chr;
+  } else if (num >= 26 && num <= 51) {
+    num -= 26;
+    chr = String.fromCharCode(97 + num).toUpperCase();
+    return "A" + chr;
+  } else if (num >= 52 && num <= 77) {
+    num -= 52;
+    chr = String.fromCharCode(97 + num).toUpperCase();
+    return "B" + chr;
+  } else if (num >= 78 && num <= 103) {
+    num -= 78;
+    chr = String.fromCharCode(97 + num).toUpperCase();
+    return "C" + chr;
+  }
 }
 
 // folders
@@ -135,48 +147,45 @@ function fmat12DT() {
   return d.join("-") + " " + t.join(":") + " " + s;
 }
 
-// script
+// config variables and globals
+
+var ss          = SpreadsheetApp.getActiveSpreadsheet();
+var sheets      = arrSheetNames(ss);
+var projectPath = config.projectPath;
+var process     = config.process;
+var keepHeaders = config.keepHeaders;
+var targets     = config.targets;
+var zipOutput   = config.zipOutput;
+
+var target, targetSheet, targetRange;
 
 function runScript() {
 
-  // config
-
-  var ss          = SpreadsheetApp.getActiveSpreadsheet();
-  var sheets      = arrSheetNames(ss);
-  var projectPath = config.projectPath;
-  var process     = config.process;
-  var keepHeaders = config.keepHeaders;
-  var targets     = config.targets;
-  var zipOutput   = config.zipOutput;
-
-  // switch 
-
-  var exportPath, target, targetSheet, targetRange;
-
   switch(process) {
     case "exportSheets":
-      exportPath = projectPath + " " + fmat12DT(); 
-      createVerifyPath(exportPath);
-
+      var path = projectPath + " " + fmat12DT(); 
+      createVerifyPath(path);
+      // loop over targets, build form config options
       for (var i = 0; i < targets.length; i++) {
-        target      = targets[i];
-        targetSheet = target.sheet;
+        var sheet = targets[i].sheet;
 
-        if (checkValIn(sheets, targetSheet)) {
-          targetSheet = ss.getSheetByName(targetSheet);
+        if (checkValIn(sheets, sheet)) {
+          sheet = ss.getSheetByName(sheet);
         }
 
-        // get last column / row with data in it, trim down provided range to actual values
+        var dataRange = sheet.getDataRange();
+        Logger.log(sheet.getName());
+        Logger.log(dataRange.getA1Notation());
 
-        if (typeof target.range !== "undefined") {
-          targetRange = targetSheet.getRange(target.range);
+        if (typeof targets[i].range !== "undefined") {
+          range = sheet.getRange(targets[i].range);
+          Logger.log(range.getA1Notation());
         } else {
           // need to figure out the range here...
         }
 
-
-        Logger.log(targetSheet.getSheetName());
-        Logger.log(targetRange.getA1Notation());
+        // Logger.log(targetSheet.getSheetName());
+        // Logger.log(targetRange.getA1Notation());
 
       } 
       break;
