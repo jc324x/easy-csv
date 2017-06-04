@@ -4,10 +4,6 @@ var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/eas
 // var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/broken-apple-school-manager.json");
 // var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
 
-// global
-
-// global variables here
-
 // https://github.com/jcodesmn/google-apps-script-cheat-sheet 
 
 // files and folders
@@ -40,6 +36,21 @@ function importConfiguration(scriptConfig) {
     return json;
   }
 }
+
+// arrays 
+
+function checkValIn(arr, val) { 
+  return arr.indexOf(val) > -1; 
+}
+
+function arrSheetNames(ssObj) {
+  var sheets = ssObj.getSheets();
+  var arr    = [];
+  for (var i = 0; i < sheets.length; i++) {
+    arr.push(sheets[i].getName());
+  } 
+  return arr;
+} 
 
 // array of objects
 
@@ -108,27 +119,66 @@ function createVerifyPath(path) {
   return fldr;
 }
 
+// timestamp
+
+function fmat12DT() {
+  var n = new Date();
+  var d = [ n.getMonth() + 1, n.getDate(), n.getYear() ];
+    var t = [ n.getHours(), n.getMinutes(), n.getSeconds() ];
+    var s = ( t[0] < 12 ) ? "AM" : "PM";
+  t[0]  = ( t[0] <= 12 ) ? t[0] : t[0] - 12;
+  for ( var i = 1; i < 3; i++ ) {
+    if ( t[i] < 10 ) {
+      t[i] = "0" + t[i];
+    }
+  }
+  return d.join("-") + " " + t.join(":") + " " + s;
+}
+
 // script
 
 function runScript() {
+
+  // config
+
+  var ss          = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets      = arrSheetNames(ss);
   var projectPath = config.projectPath;
   var process     = config.process;
   var keepHeaders = config.keepHeaders;
   var targets     = config.targets;
   var zipOutput   = config.zipOutput;
 
-  switch(process) {
-    case "exportSpreadsheet":
-      // essentially exportSheets but with less config
-      break;
-    case "exportSheets":
-      // project folder
-      createVerifyPath(projectPath);
-      
-    // get all sheets in spreadsheet? at least to get the count...
+  // switch 
 
-      break;
-    case "expandSheet":
+  var exportPath, target, targetSheet, targetRange;
+
+  switch(process) {
+    case "exportSheets":
+      exportPath = projectPath + " " + fmat12DT(); 
+      createVerifyPath(exportPath);
+
+      for (var i = 0; i < targets.length; i++) {
+        target      = targets[i];
+        targetSheet = target.sheet;
+
+        if (checkValIn(sheets, targetSheet)) {
+          targetSheet = ss.getSheetByName(targetSheet);
+        }
+
+        // get last column / row with data in it, trim down provided range to actual values
+
+        if (typeof target.range !== "undefined") {
+          targetRange = targetSheet.getRange(target.range);
+        } else {
+          // need to figure out the range here...
+        }
+
+
+        Logger.log(targetSheet.getSheetName());
+        Logger.log(targetRange.getA1Notation());
+
+      } 
       break;
     default:
       Logger.log("please check your configuration and try again");

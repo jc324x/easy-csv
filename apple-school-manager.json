@@ -2,6 +2,7 @@
    "projectPath":"easy-csv-exports/apple-school-manager",
    "process":"exportSheets",
    "keepHeaders":"true",
+   "trimToData":"true",
    "targets":[
       {
          "sheet":"locations"
@@ -27,5 +28,6 @@
          "range":"A:H"
       }
    ],
-   "zipOutput":"true"
+   "zipOutput":"true",
+   "autoDownload":"true"
 }
