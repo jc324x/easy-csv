@@ -176,14 +176,15 @@ var target, targetSheet, targetRange;
 // testing 
 
 
-function colNum(col) {
-  var col = col.toUpperCase();
+function colNum(column) {
+  var col = column.toUpperCase();
+  var chr0, chr1;
   if (col.length === 1)  {
-    var chr0 = col.charCodeAt(0) - 64;
+    chr0 = col.charCodeAt(0) - 64;
     return chr0;
   } else if (col.length === 2) {
-    var chr0 = (col.charCodeAt(0) - 64) * 26;
-    var chr1 = col.charCodeAt(1) - 64;
+    chr0 = (col.charCodeAt(0) - 64) * 26;
+    chr1 = col.charCodeAt(1) - 64;
     return chr0 + chr1;
   }
 }
@@ -215,12 +216,10 @@ function limitDataRange(sheetObj, a1Notation) {
 
   // translate A:J = A(last row):J(lastt row)
 
-  for (var i = 0; i < 2; i++) {
-    limitArr.push(colNum(limitSplit[i].match(/\D/g,'').toString()));
-    dataArr.push(colNum(dataSplit[i].match(/\D/g,'').toString()));
-    limitArr.push(parseInt(limitSplit[i].match(/\d+/g)));
-    dataArr.push(parseInt(dataSplit[i].match(/\d+/g)));
-  } 
+    limitArr.push(colNum(limitSplit[0].match(/\D/g,'').toString()));
+    dataArr.push(colNum(dataSplit[0].match(/\D/g,'').toString()));
+    limitArr.push(parseInt(limitSplit[0].match(/\d+/g)));
+    dataArr.push(parseInt(dataSplit[0].match(/\d+/g)));
 
   Logger.log(limitArr);
   Logger.log(dataArr);
