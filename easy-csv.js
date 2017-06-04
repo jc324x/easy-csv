@@ -203,7 +203,9 @@ function colNum(col) {
 
 function limitDataRange(sheetObj, a1Notation) {
 
-  var dataRange = sheetObj.getDataRange().getA1Notation();
+  var dataRange  = sheetObj.getDataRange().getA1Notation();
+  var lastRow    = sheetObj.getLastRow();
+  var lastColumn = sheetObj.getLastColumn();
 
   var limitArr = [];
   var dataArr  = [];
@@ -219,12 +221,16 @@ function limitDataRange(sheetObj, a1Notation) {
     limitArr.push(parseInt(limitSplit[i].match(/\d+/g)));
     dataArr.push(parseInt(dataSplit[i].match(/\d+/g)));
   } 
+
+  Logger.log(limitArr);
+  Logger.log(dataArr);
+
 } 
 
 
 function testLimit() {
   var testSheet = ss.getSheetByName("students");
-  limitDataRange(testSheet, "A1:B5");
+  limitDataRange(testSheet, "A:B5");
 } 
 
 
