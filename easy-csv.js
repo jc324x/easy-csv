@@ -4,7 +4,15 @@ var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/eas
 // var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/broken-apple-school-manager.json");
 // var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
 
-// https://github.com/jcodesmn/google-apps-script-cheat-sheet 
+// global
+
+var ss          = SpreadsheetApp.getActiveSpreadsheet();
+var sheets      = arrSheetNames(ss);
+var projectPath = config.projectPath;
+var keepHeaders = config.keepHeaders;
+var targets     = config.targets;
+var zipOutput   = config.zipOutput;
+var target, targetSheet, targetRange;
 
 // files and folders
 
@@ -163,15 +171,6 @@ function fmat12DT() {
 
 // config variables and globals
 
-var ss          = SpreadsheetApp.getActiveSpreadsheet();
-var sheets      = arrSheetNames(ss);
-var projectPath = config.projectPath;
-var process     = config.process;
-var keepHeaders = config.keepHeaders;
-var targets     = config.targets;
-var zipOutput   = config.zipOutput;
-
-var target, targetSheet, targetRange;
 
 // columns
 
@@ -208,25 +207,12 @@ function numCol(number) {
   }
 }
 
-// get A1 Notation as numbers?
-// target (small) = A:B   = 1,(1),2,(5)
-// data range     = A1:C5 = 1,1,3,5
-// result         = A1:B5 = 1,1,2,5
-
-// target (big)   = A:J100 = 1,(1),10,100
-// data range     = A1:C5  = 1,1,3,5
-// result         = A1:C5  = 1,1,3,5
-
-// need to give a number to a column
-// then convert into two arrays and do math (?)
-// then convert back to A1 notation
-
-function Target(sheetObj, a1Notation) {
+function Scope(sheetObj, a1Notation) {
   var a1;
-  var dr = sheetObj.getDataRange().getA1Notation();
+  var datarange = sheetObj.getDataRange().getA1Notation();
 
   if (typeof a1Notation === "undefined") {
-    a1 = dr;
+    a1 = datarange;
   } else {
     a1 = a1Notation;
   }
@@ -251,6 +237,7 @@ function Target(sheetObj, a1Notation) {
     endRow = lRow;
   }
 
+  this.sheet    = sheetObj;
   this.startCol = startCol;
   this.startRow = startRow;
   this.endCol   = endCol;
@@ -261,35 +248,41 @@ function Target(sheetObj, a1Notation) {
   };
 
   this.getA1Notation = function() {
-    return numCol(this.startCol) + this.startRow + ":" + numCol(this.endCol) + this.endRow;
+    if (this.endCol >= 1 && this.endRow >= 1) {
+      Logger.log("valid");
+      var _a1Notation = numCol(this.startCol) + this.startRow + ":" + numCol(this.endCol) + this.endRow;
+      return  _a1Notation;
+    }
   };
 } 
 
-function rangeAsCSV(a1Notation) {
-  // -> empty sheet -> A1:`0`
+function convertScopeToCSV(target) {
 }
+
+function expandScopeToCSV(target){
+}
+
 
 function runScript() {
 
-  switch(process) {
+  switch(config.process) {
     case "exportSheets":
-      var path = projectPath + " " + fmat12DT(); 
+      
+      // create export folder
+      var path   = projectPath + " " + fmat12DT();
       var folder = createVerifyPath(path);
 
+      // loop over targets
       for (var i = 0; i < targets.length; i++) {
-        var sheet = targets[i].sheet;
+        var target = targets[i];
 
-        if (checkValIn(sheets, sheet)) {
-          sheet = ss.getSheetByName(sheet);
-        }
+        // verify that the sheet exists in the spreadsheet
+        var sheet = target.sheet;
+        if (checkValIn(sheets, sheet)) { sheet = ss.getSheetByName(sheet); }
 
-        var name = sheet.getName();
-        var target = new Target(sheet, targets[i].range);
-        Logger.log(name);
-        Logger.log(target.getA1Notation());
-        // var csv = rangeAsCSV(target);
-        // test that csv is not null...then create file
-        // folder.createFile(name, csv);
+        // a Scope is a validated and targeted range
+        var scope = new Scope(sheet, target.range);
+        expandScopeToCSV(scope);
       } 
       break;
     default:
