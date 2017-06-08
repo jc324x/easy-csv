@@ -9,11 +9,6 @@ var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/eas
 var ui          = SpreadsheetApp.getUi();
 var ss          = SpreadsheetApp.getActiveSpreadsheet();
 var sheets      = arrSheetNames(ss);
-var projectPath = config.projectPath;
-var keepHeaders = config.keepHeaders;
-var targets     = config.targets;
-var zipOutput   = config.zipOutput;
-var target, targetSheet, targetRange;
 
 // menu
 
@@ -293,12 +288,12 @@ function expandScopeToCSV(scope, folder) {
 function runRecipe() {
   switch(config.process) {
     case "exportSheets":
-      var folder = createVerifyPath(projectPath + " " + fmat12DT());
-      for (var i = 0; i < targets.length; i++) {
-        var sheet = targets[i].sheet;
+      var folder = createVerifyPath(config.projectPath + " " + fmat12DT());
+      for (var i = 0; i < config.targets.length; i++) {
+        var sheet = config.targets[i].sheet;
         if (checkValIn(sheets, sheet)) { 
           sheet = ss.getSheetByName(sheet); 
-          var scope = new Scope(sheet, targets[i].range);
+          var scope = new Scope(sheet, config.targets[i].range);
           // set options from config here...headers etc.
           expandScopeToCSV(scope, folder);
         } 
@@ -308,3 +303,11 @@ function runRecipe() {
       Logger.log("please check your configuration and try again");
   }
 }
+
+// zip 
+// folder.createFile(Utilities.zip(folder.getFiles(), 'newFiles.zip'));)
+
+// download folder 
+// fetch -> var csvDoc = UrlFetchApp.fetch(file2.url.apiurl, options);
+// var response = UrlFetchApp.fetch("http://www.google.com/");
+// getDownloadUrl()
