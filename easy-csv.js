@@ -6,9 +6,10 @@ var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/eas
 
 // global
 
-var ui     = SpreadsheetApp.getUi();
-var ss     = SpreadsheetApp.getActiveSpreadsheet();
-var sheets = arrSheetNames(ss);
+var ui         = SpreadsheetApp.getUi();
+var ss         = SpreadsheetApp.getActiveSpreadsheet();
+var sheets     = ss.getSheets();
+var sheetNames = arrSheetNames(ss);
 
 // menu
 
@@ -61,6 +62,25 @@ function createVerifyPath(path) {
     }
   } 
   return fldr;
+}
+
+function zipFilesIn(fldr, name){
+  var validName;
+  if (typeof name === "undefined") {
+    validName = "Archive.zip";
+  } else {
+    validName = name;
+  }
+  var blobs = [];
+  var files = filesIn(fldr);
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    var blob = file.getBlob();
+    blobs.push(blob);
+  } 
+  var zips = Utilities.zip(blobs, validName);
+  var zip = fldr.createFile(zips);
+  return zip;
 }
 
 // json
@@ -129,7 +149,6 @@ function numCol(number) {
   }
 }
 
-
 function colNum(column) {
   var col = column.toUpperCase();
   var chr0, chr1;
@@ -142,7 +161,6 @@ function colNum(column) {
     return chr0 + chr1;
   }
 }
-
 
 // range
 
@@ -275,7 +293,7 @@ function Scope(sheetObj, a1Notation) {
   };
 } 
 
-function expandScopeToCSV(scope, folder) {
+function exportScopeToCSV(scope, folder) {
   var a1 = scope.getA1Notation();
   if (typeof a1 !== "undefined") {
     var csv = "";
@@ -297,96 +315,52 @@ function expandScopeToCSV(scope, folder) {
   }
 }
 
+function expandScopeAndExportToCSV() {
+  
+} 
+
+
 // function convertScopeToCSV(target){
 // }
 
 function runRecipe() {
+  var folder = createVerifyPath(config.projectPath + " " + fmat12DT());
+  var sheet, scope, zip;
+
   switch(config.process) {
+
+    case "exportSpreadsheet":
+      for (var i = 0; i < sheets.length; i++) {
+        scope = new Scope(sheets[i]);
+        exportScopeToCSV(scope, folder);
+      } 
+      if (config.zipCSVs === true) {
+        zip = zipFilesIn(folder, config.zipName);
+      }
+    break;
+
     case "exportSheets":
-      var folder = createVerifyPath(config.projectPath + " " + fmat12DT());
-      for (var i = 0; i < config.targets.length; i++) {
-        var sheet = config.targets[i].sheet;
-        if (checkValIn(sheets, sheet)) { 
-          sheet = ss.getSheetByName(sheet); 
-          var scope = new Scope(sheet, config.targets[i].range);
+      for (var j = 0; j < config.targets.length; j++) {
+        sheet = config.targets[j].sheet;
+        if (checkValIn(sheetNames, sheet)) { 
+          var validSheet = ss.getSheetByName(sheet); 
+          scope = new Scope(validSheet, config.targets[j].range);
           if (config.chopHeaders === true) {
             scope.chopHeaders();
           }
-          expandScopeToCSV(scope, folder);
+          exportScopeToCSV(scope, folder);
         } 
       } 
+      if (config.zipCSVs === true) {
+        zip = zipFilesIn(folder, config.zipName);
+      }
+    break;
 
-      if (config.zipExports === true) {
-        var zip = zipFilesIn(folder, config.zipName);
-        // var zipUrl = zip.getDownloadUrl();
-        // Logger.log(zipUrl);
+    case "expandSheet":
+      Logger.log("expandSheet");
+    break;
 
-      
-      // downloading?
-		
-      break;
     default:
       Logger.log("please check your configuration and try again");
   }
 }
-
-function zipFilesIn(fldr, name){
-  var validName;
-
-  if (typeof name === "undefined") {
-    validName = "Archive.zip";
-  } else {
-    validName = name;
-  }
-
-  var blobs = [];
-  var files = filesIn(fldr);
-  for (var i = 0; i < files.length; i++) {
-    var file = files[i];
-    var blob = file.getBlob();
-    blobs.push(blob);
-  } 
-  var zips = Utilities.zip(blobs, validName);
-  var zip = fldr.createFile(zips);
-  return zip;
-}
-
-// function blobsForFilesIn(fldr) {
-//   var blobs   = [];
-//   var files   = filesIn(fldr);
-//   for (var i = 0; i < files.length; i++) {
-//     var file = files[i];
-//     var blob = file.getBlob();
-//     blobs.push(blob);
-//   } 
-//   return blobs;
-// }
-
-// var token = ScriptApp.getOAuthToken();
-
-// var headersOptions = { 
-//   Authorization : 'Bearer '  + token
-//   };
-
-// var options = { 
-//   headers : headersOptions
-//   };
-
-// var csvDoc = UrlFetchApp.fetch(file2.url.apiurl, options);
-
-
-// var token = ScriptApp.getOAuthToken();
-// var headersOptions = { 
-// Authorization : 'Bearer '  + token
-// };
-
-// var options = { 
-// headers : headersOptions
-// };
-
-// var download = UrlFetchApp.fetch(zip.urls.browserUrl, options);
-// Logger.log(download);
-
-// }
-
-

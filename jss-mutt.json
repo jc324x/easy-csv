@@ -1,10 +1,11 @@
-{  
+{
    "projectPath":"easy-csv-exports/jss-mutt",
    "process":"expandSheet",
-   "keepHeaders":"false",
-   "zipOutput":"false",
-   "target":{  
+   "removeHeaders":true,
+   "target":{
       "sheet":"jss-mutt",
       "range":"A:J"
-   }
+   },
+   "zipCSVs":true,
+   "zipName":"jss-mutt.zip"
 }

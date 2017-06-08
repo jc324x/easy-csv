@@ -1,0 +1,6 @@
+{
+   "projectPath":"easy-csv-exports/spreadsheet",
+   "process":"exportSpreadsheet",
+   "zipCSVs":true,
+   "zipName":"Archive.zip"
+}
