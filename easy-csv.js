@@ -293,23 +293,9 @@ function runRecipe() {
           Logger.log(sheet.getName());
           var scope = new Scope(sheet, config.targets[i].range);
           Logger.log(scope.getA1Notation());
-
-          if (config.chopHeaders) {
-            scope.chopHeaders();
-          }
-
+          Logger.log(config.chopHeaders);
           expandScopeToCSV(scope, folder);
         } 
-
-        if (config.zipExportedCSVs) {
-          folder.createFile(Utilities.zip(folder.getFiles(), "Archive.zip"));
-        }
-
-        if (config.autoDownload) {
-          var url = folder.getDownloadUrl();
-          UrlFetchApp.fetch(url);
-        }
-
       } 
       break;
     default:
@@ -317,10 +303,29 @@ function runRecipe() {
   }
 }
 
-// zip 
-// folder.createFile(Utilities.zip(folder.getFiles(), 'newFiles.zip'));)
+// getting blobby
 
-// download folder 
-// fetch -> var csvDoc = UrlFetchApp.fetch(file2.url.apiurl, options);
-// var response = UrlFetchApp.fetch("http://www.google.com/");
-// getDownloadUrl()
+// var folderName = DriveApp.getFoldersByName("<folderName>");
+// var theFolder = folderName.next();
+// var folderID =theFolder.getId();
+// var folder = DriveApp.getFolderById(folderID);
+// var zipped = Utilities.zip(getBlobs(folder, ''), folder.getName()+'.zip');
+// folder.getParents().next().createFile(zipped);
+
+// function getBlobs(rootFolder, path) {
+//   var blobs = [];
+//   var files = rootFolder.getFiles();
+//   while (files.hasNext()) {
+//     var file = files.next().getBlob();
+//     file.setName(path+file.getName());
+//     blobs.push(file);
+//   }
+//   var folders = rootFolder.getFolders();
+//   while (folders.hasNext()) {
+//     var folder = folders.next();
+//     var fPath = path+folder.getName()+'/';
+//     blobs.push(Utilities.newBlob([]).setName(fPath)); //comment/uncomment this line to skip/include empty folders
+//     blobs = blobs.concat(getBlobs(folder, fPath));
+//   }
+//   return blobs;
+// }
