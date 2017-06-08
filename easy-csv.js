@@ -315,11 +315,15 @@ function runRecipe() {
           expandScopeToCSV(scope, folder);
         } 
       } 
-      Logger.log(config.zipExports);
 
-      if (config.zipExports === "true") {
-        zipFilesIn(folder, config.zipName);
-      }
+      if (config.zipExports === true) {
+        var zip = zipFilesIn(folder, config.zipName);
+        // var zipUrl = zip.getDownloadUrl();
+        // Logger.log(zipUrl);
+
+      
+      // downloading?
+		
       break;
     default:
       Logger.log("please check your configuration and try again");
@@ -327,15 +331,24 @@ function runRecipe() {
 }
 
 function zipFilesIn(fldr, name){
-  var blobs   = [];
-  var files   = filesIn(fldr);
+  var validName;
+
+  if (typeof name === "undefined") {
+    validName = "Archive.zip";
+  } else {
+    validName = name;
+  }
+
+  var blobs = [];
+  var files = filesIn(fldr);
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
     var blob = file.getBlob();
     blobs.push(blob);
   } 
-  var zip = Utilities.zip(blobs, name);
-  fldr.createFile(zip);
+  var zips = Utilities.zip(blobs, validName);
+  var zip = fldr.createFile(zips);
+  return zip;
 }
 
 // function blobsForFilesIn(fldr) {
@@ -349,7 +362,7 @@ function zipFilesIn(fldr, name){
 //   return blobs;
 // }
 
-var token = ScriptApp.getOAuthToken();
+// var token = ScriptApp.getOAuthToken();
 
 // var headersOptions = { 
 //   Authorization : 'Bearer '  + token
@@ -360,4 +373,20 @@ var token = ScriptApp.getOAuthToken();
 //   };
 
 // var csvDoc = UrlFetchApp.fetch(file2.url.apiurl, options);
+
+
+// var token = ScriptApp.getOAuthToken();
+// var headersOptions = { 
+// Authorization : 'Bearer '  + token
+// };
+
+// var options = { 
+// headers : headersOptions
+// };
+
+// var download = UrlFetchApp.fetch(zip.urls.browserUrl, options);
+// Logger.log(download);
+
+// }
+
 
