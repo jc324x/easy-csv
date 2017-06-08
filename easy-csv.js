@@ -83,14 +83,15 @@ function numCol(number) {
 }
 
 
-function colNum(col) {
-  var col = col.toUpperCase();
+function colNum(column) {
+  var col = column.toUpperCase();
+  var chr0, chr1;
   if (col.length === 1)  {
-    var chr0 = col.charCodeAt(0) - 64;
+    chr0 = col.charCodeAt(0) - 64;
     return chr0;
   } else if (col.length === 2) {
-    var chr0 = (col.charCodeAt(0) - 64) * 26;
-    var chr1 = col.charCodeAt(1) - 64;
+    chr0 = (col.charCodeAt(0) - 64) * 26;
+    chr1 = col.charCodeAt(1) - 64;
     return chr0 + chr1;
   }
 }
@@ -108,8 +109,8 @@ function headerVal(rangeObj){
   return arr;
 }
 
-function numCol(num) {
-  var num = num - 1, chr;
+function numCol(number) {
+  var num = number - 1, chr;
   if (num <= 25) {
     chr = String.fromCharCode(97 + num).toUpperCase();
     return chr;
@@ -255,19 +256,23 @@ function Scope(sheetObj, a1Notation) {
   };
 } 
 
-function expandScopeToCSV(scope) {
+function expandScopeToCSV(scope, folder) {
   var a1 = scope.getA1Notation();
-  Logger.log(scope.sheet.getName());
-  Logger.log(a1);
-  Logger.log(scope.endCol);
-  Logger.log(scope.end);
   if (typeof a1 !== "undefined") {
     var values = scope.sheet.getRange(scope.getA1Notation()).getValues();
-    for (var i = 0; i < (scope.endCol); i++) {
-      Logger.log("start of row");
-      for (var j = 0; j < (scope.endRow -1 ); j++) {
-        Logger.log("{" + i + "}" + " " + "{"  + j + "}");
-        Logger.log(values[i][j]);
+    var csv;
+    for (var i = 0; i < (scope.endRow); i++) {
+      for (var j = 0; j < (scope.endCol); j++) {
+        var value = values[i][j];
+        if (j === (scope.endCol - 1) && i === (scope.endRow -1)) {
+          Logger.log("last in row / col");
+          // don't append new line or ','
+        } else if (j === (scope.endCol - 1)) {
+          Logger.log("last in row");
+          // append new line, no ','
+        } else {
+          // append to csv with ','
+        }
       } 
     } 
   }
@@ -275,7 +280,6 @@ function expandScopeToCSV(scope) {
 
 function convertScopeToCSV(target){
 }
-
 
 function runScript() {
   switch(config.process) {
@@ -294,6 +298,5 @@ function runScript() {
     default:
       Logger.log("please check your configuration and try again");
   }
-
 }
 
