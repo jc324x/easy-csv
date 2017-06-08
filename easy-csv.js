@@ -249,40 +249,46 @@ function Scope(sheetObj, a1Notation) {
 
   this.getA1Notation = function() {
     if (this.endCol >= 1 && this.endRow >= 1) {
-      Logger.log("valid");
       var _a1Notation = numCol(this.startCol) + this.startRow + ":" + numCol(this.endCol) + this.endRow;
       return  _a1Notation;
     }
   };
 } 
 
-function convertScopeToCSV(target) {
+function expandScopeToCSV(scope) {
+  var a1 = scope.getA1Notation();
+  Logger.log(scope.sheet.getName());
+  Logger.log(a1);
+  Logger.log(scope.endCol);
+  Logger.log(scope.end);
+  if (typeof a1 !== "undefined") {
+    var values = scope.sheet.getRange(scope.getA1Notation()).getValues();
+    for (var i = 0; i < (scope.endCol); i++) {
+      Logger.log("start of row");
+      for (var j = 0; j < (scope.endRow -1 ); j++) {
+        Logger.log("{" + i + "}" + " " + "{"  + j + "}");
+        Logger.log(values[i][j]);
+      } 
+    } 
+  }
 }
 
-function expandScopeToCSV(target){
+function convertScopeToCSV(target){
 }
 
 
 function runScript() {
-
   switch(config.process) {
     case "exportSheets":
-      
-      // create export folder
-      var path   = projectPath + " " + fmat12DT();
-      var folder = createVerifyPath(path);
-
-      // loop over targets
+      var folder = createVerifyPath(projectPath + " " + fmat12DT());
       for (var i = 0; i < targets.length; i++) {
-        var target = targets[i];
-
-        // verify that the sheet exists in the spreadsheet
-        var sheet = target.sheet;
-        if (checkValIn(sheets, sheet)) { sheet = ss.getSheetByName(sheet); }
-
-        // a Scope is a validated and targeted range
-        var scope = new Scope(sheet, target.range);
-        expandScopeToCSV(scope);
+        var sheet = targets[i].sheet;
+        if (checkValIn(sheets, sheet)) { 
+          sheet = ss.getSheetByName(sheet); 
+          var scope = new Scope(sheet, targets[i].range);
+          // set options from config here...headers etc.
+          expandScopeToCSV(scope, folder);
+        } 
       } 
       break;
     default:
