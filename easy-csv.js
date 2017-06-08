@@ -6,9 +6,9 @@ var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/eas
 
 // global
 
-var ui          = SpreadsheetApp.getUi();
-var ss          = SpreadsheetApp.getActiveSpreadsheet();
-var sheets      = arrSheetNames(ss);
+var ui     = SpreadsheetApp.getUi();
+var ss     = SpreadsheetApp.getActiveSpreadsheet();
+var sheets = arrSheetNames(ss);
 
 // menu
 
@@ -174,9 +174,6 @@ function fmat12DT() {
   return d.join("-") + " " + t.join(":") + " " + s;
 }
 
-// config variables and globals
-
-
 // columns
 
 function colNum(column) {
@@ -294,9 +291,10 @@ function runRecipe() {
         if (checkValIn(sheets, sheet)) { 
           sheet = ss.getSheetByName(sheet); 
           var scope = new Scope(sheet, config.targets[i].range);
-          // set options from config here...headers etc.
           expandScopeToCSV(scope, folder);
         } 
+        // all sheets in spreadsheet have been processed
+
       } 
       break;
     default:
