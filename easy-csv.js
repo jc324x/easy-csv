@@ -20,6 +20,49 @@ function onOpen(e) {
 
 // files and folders
 
+function filesIn(fldr) {
+  var fi  = fldr.getFiles();
+  var arr = [];
+  while (fi.hasNext()) {
+    var file = fi.next();
+    arr.push(file);
+  } 
+  return arr;
+}
+
+function foldersIn(fldr) {
+  var fi  = fldr.getFolders();
+  var arr = [];
+  while (fi.hasNext()) {
+    var _fldr = fi.next();
+    arr.push(_fldr);
+  } 
+  return arr;
+}
+
+function createVerifyPath(path) {
+  var arr = path.split('/');
+  var fldr;
+  for (i = 0; i < arr.length; i++) {
+    var fi = DriveApp.getRootFolder().getFoldersByName(arr[i]);
+    if (i === 0) {
+      if(!(fi.hasNext())) {
+        DriveApp.createFolder(arr[i]);
+        fi = DriveApp.getFoldersByName(arr[i]);
+      } 
+      fldr = fi.next();
+    } else if (i >= 1) {
+      fi = fldr.getFoldersByName(arr[i]);
+      if(!(fi.hasNext())) {
+        fldr.createFolder(arr[i]);
+        fi = DriveApp.getFoldersByName(arr[i]);
+      } 
+      fldr = fi.next();
+    }
+  } 
+  return fldr;
+}
+
 // json
 
 function jsonFromUrl(url) {
@@ -131,31 +174,6 @@ function numCol(number) {
     chr = String.fromCharCode(97 + num).toUpperCase();
     return "C" + chr;
   }
-}
-
-// folders
-
-function createVerifyPath(path) {
-  var arr = path.split('/');
-  var fldr;
-  for (i = 0; i < arr.length; i++) {
-    var fi = DriveApp.getRootFolder().getFoldersByName(arr[i]);
-    if (i === 0) {
-      if(!(fi.hasNext())) {
-        DriveApp.createFolder(arr[i]);
-        fi = DriveApp.getFoldersByName(arr[i]);
-      } 
-      fldr = fi.next();
-    } else if (i >= 1) {
-      fi = fldr.getFoldersByName(arr[i]);
-      if(!(fi.hasNext())) {
-        fldr.createFolder(arr[i]);
-        fi = DriveApp.getFoldersByName(arr[i]);
-      } 
-      fldr = fi.next();
-    }
-  } 
-  return fldr;
 }
 
 // timestamp
@@ -290,42 +308,42 @@ function runRecipe() {
         var sheet = config.targets[i].sheet;
         if (checkValIn(sheets, sheet)) { 
           sheet = ss.getSheetByName(sheet); 
-          Logger.log(sheet.getName());
           var scope = new Scope(sheet, config.targets[i].range);
-          Logger.log(scope.getA1Notation());
-          Logger.log(config.chopHeaders);
+          if (config.chopHeaders === true) {
+            scope.chopHeaders();
+          }
           expandScopeToCSV(scope, folder);
         } 
       } 
+
+      if (config.zipExports === true) {
+        zipFilesIn(folder, config.zipName);
+      }
       break;
     default:
       Logger.log("please check your configuration and try again");
   }
 }
 
-// getting blobby
+function zipFilesIn(fldr, name){
+  var blobs   = [];
+  var files   = filesIn(fldr);
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    var blob = file.getBlob();
+    blobs.push(blob);
+  } 
+  var zip = Utilities.zip(blobs, name);
+  fldr.createFile(zip);
+}
 
-// var folderName = DriveApp.getFoldersByName("<folderName>");
-// var theFolder = folderName.next();
-// var folderID =theFolder.getId();
-// var folder = DriveApp.getFolderById(folderID);
-// var zipped = Utilities.zip(getBlobs(folder, ''), folder.getName()+'.zip');
-// folder.getParents().next().createFile(zipped);
-
-// function getBlobs(rootFolder, path) {
-//   var blobs = [];
-//   var files = rootFolder.getFiles();
-//   while (files.hasNext()) {
-//     var file = files.next().getBlob();
-//     file.setName(path+file.getName());
-//     blobs.push(file);
-//   }
-//   var folders = rootFolder.getFolders();
-//   while (folders.hasNext()) {
-//     var folder = folders.next();
-//     var fPath = path+folder.getName()+'/';
-//     blobs.push(Utilities.newBlob([]).setName(fPath)); //comment/uncomment this line to skip/include empty folders
-//     blobs = blobs.concat(getBlobs(folder, fPath));
-//   }
+// function blobsForFilesIn(fldr) {
+//   var blobs   = [];
+//   var files   = filesIn(fldr);
+//   for (var i = 0; i < files.length; i++) {
+//     var file = files[i];
+//     var blob = file.getBlob();
+//     blobs.push(blob);
+//   } 
 //   return blobs;
 // }

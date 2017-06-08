@@ -28,5 +28,5 @@
       }
    ],
    "zipExportedCSVs":"true",
-   "autoDownload":"true"
+   "zipName":"Archive.zip"
 }
