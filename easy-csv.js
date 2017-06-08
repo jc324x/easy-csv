@@ -1,7 +1,7 @@
 // config 
 
-var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
-// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/broken-apple-school-manager.json");
+var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/exportSpreadsheet.json");
+// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
 // var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
 
 // global
@@ -127,7 +127,7 @@ function arrSheetNames(ssObj) {
   return arr;
 } 
 
-// array of objects
+// arrays & ranges
 
 function numCol(number) {
   var num = number - 1, chr;
@@ -162,8 +162,6 @@ function colNum(column) {
   }
 }
 
-// range
-
 function headerVal(rangeObj){
   var vals = rangeObj.getValues();
   var arr  = [];
@@ -174,27 +172,7 @@ function headerVal(rangeObj){
   return arr;
 }
 
-function numCol(number) {
-  var num = number - 1, chr;
-  if (num <= 25) {
-    chr = String.fromCharCode(97 + num).toUpperCase();
-    return chr;
-  } else if (num >= 26 && num <= 51) {
-    num -= 26;
-    chr = String.fromCharCode(97 + num).toUpperCase();
-    return "A" + chr;
-  } else if (num >= 52 && num <= 77) {
-    num -= 52;
-    chr = String.fromCharCode(97 + num).toUpperCase();
-    return "B" + chr;
-  } else if (num >= 78 && num <= 103) {
-    num -= 78;
-    chr = String.fromCharCode(97 + num).toUpperCase();
-    return "C" + chr;
-  }
-}
-
-// timestamp
+// datestamp
 
 function fmat12DT() {
   var n = new Date();
@@ -210,43 +188,8 @@ function fmat12DT() {
   return d.join("-") + " " + t.join(":") + " " + s;
 }
 
-// columns
-
-function colNum(column) {
-  var col = column.toUpperCase();
-  var chr0, chr1;
-  if (col.length === 1)  {
-    chr0 = col.charCodeAt(0) - 64;
-    return chr0;
-  } else if (col.length === 2) {
-    chr0 = (col.charCodeAt(0) - 64) * 26;
-    chr1 = col.charCodeAt(1) - 64;
-    return chr0 + chr1;
-  }
-}
-
-function numCol(number) {
-  var num = number - 1, chr;
-  if (num <= 25) {
-    chr = String.fromCharCode(97 + num).toUpperCase();
-    return chr;
-  } else if (num >= 26 && num <= 51) {
-    num -= 26;
-    chr = String.fromCharCode(97 + num).toUpperCase();
-    return "A" + chr;
-  } else if (num >= 52 && num <= 77) {
-    num -= 52;
-    chr = String.fromCharCode(97 + num).toUpperCase();
-    return "B" + chr;
-  } else if (num >= 78 && num <= 103) {
-    num -= 78;
-    chr = String.fromCharCode(97 + num).toUpperCase();
-    return "C" + chr;
-  }
-}
-
 function Scope(sheetObj, a1Notation) {
-  var a1;
+  var a1, startCol, startRow, endCol, endRow;
   var datarange = sheetObj.getDataRange().getA1Notation();
 
   if (typeof a1Notation === "undefined") {
@@ -254,14 +197,18 @@ function Scope(sheetObj, a1Notation) {
   } else {
     a1 = a1Notation;
   }
+  Logger.log(a1);
 
   var lColNum  = sheetObj.getLastColumn();
   var lRow     = sheetObj.getLastRow();
   var split    = a1.split(":");
-  var startCol = colNum(split[0].match(/\D/g,'').toString());
-  var startRow = parseInt(split[0].match(/\d+/g));
-  var endCol   = colNum(split[1].match(/\D/g,'').toString());
-  var endRow   = parseInt(split[1].match(/\d+/g));
+
+  if (split.length == 2) {
+    startCol = colNum(split[0].match(/\D/g,'').toString());
+    startRow = parseInt(split[0].match(/\d+/g));
+    endCol = colNum(split[1].match(/\D/g,'').toString());
+    endRow = parseInt(split[1].match(/\d+/g));
+  }
 
   if (isNaN(startRow)) {
     startRow = 1;
@@ -295,6 +242,7 @@ function Scope(sheetObj, a1Notation) {
 
 function exportScopeToCSV(scope, folder) {
   var a1 = scope.getA1Notation();
+  Logger.log(a1);
   if (typeof a1 !== "undefined") {
     var csv = "";
     var values = scope.sheet.getRange(scope.getA1Notation()).getValues();
