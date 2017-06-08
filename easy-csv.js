@@ -290,10 +290,25 @@ function runRecipe() {
         var sheet = config.targets[i].sheet;
         if (checkValIn(sheets, sheet)) { 
           sheet = ss.getSheetByName(sheet); 
+          Logger.log(sheet.getName());
           var scope = new Scope(sheet, config.targets[i].range);
+          Logger.log(scope.getA1Notation());
+
+          if (config.chopHeaders) {
+            scope.chopHeaders();
+          }
+
           expandScopeToCSV(scope, folder);
         } 
-        // all sheets in spreadsheet have been processed
+
+        if (config.zipExportedCSVs) {
+          folder.createFile(Utilities.zip(folder.getFiles(), "Archive.zip"));
+        }
+
+        if (config.autoDownload) {
+          var url = folder.getDownloadUrl();
+          UrlFetchApp.fetch(url);
+        }
 
       } 
       break;
