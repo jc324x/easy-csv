@@ -259,27 +259,27 @@ function Scope(sheetObj, a1Notation) {
 function expandScopeToCSV(scope, folder) {
   var a1 = scope.getA1Notation();
   if (typeof a1 !== "undefined") {
+    var csv = "";
     var values = scope.sheet.getRange(scope.getA1Notation()).getValues();
-    var csv;
     for (var i = 0; i < (scope.endRow); i++) {
       for (var j = 0; j < (scope.endCol); j++) {
         var value = values[i][j];
         if (j === (scope.endCol - 1) && i === (scope.endRow -1)) {
-          Logger.log("last in row / col");
-          // don't append new line or ','
+          csv += value;
         } else if (j === (scope.endCol - 1)) {
-          Logger.log("last in row");
-          // append new line, no ','
+          csv += value + "\n";
         } else {
-          // append to csv with ','
+          csv += value + ",";
         }
       } 
     } 
+    var fileName = scope.sheet.getName() + ".csv";
+    folder.createFile(fileName, csv);
   }
 }
 
-function convertScopeToCSV(target){
-}
+// function convertScopeToCSV(target){
+// }
 
 function runScript() {
   switch(config.process) {
@@ -299,4 +299,3 @@ function runScript() {
       Logger.log("please check your configuration and try again");
   }
 }
-
