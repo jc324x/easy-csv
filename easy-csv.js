@@ -6,6 +6,7 @@ var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/eas
 
 // global
 
+var ui          = SpreadsheetApp.getUi();
 var ss          = SpreadsheetApp.getActiveSpreadsheet();
 var sheets      = arrSheetNames(ss);
 var projectPath = config.projectPath;
@@ -13,6 +14,14 @@ var keepHeaders = config.keepHeaders;
 var targets     = config.targets;
 var zipOutput   = config.zipOutput;
 var target, targetSheet, targetRange;
+
+// menu
+
+function onOpen(e) {
+  ui.createMenu('Easy CSV')
+    .addItem('Run Recipe', 'runRecipe')
+    .addToUi();
+}
 
 // files and folders
 
@@ -281,7 +290,7 @@ function expandScopeToCSV(scope, folder) {
 // function convertScopeToCSV(target){
 // }
 
-function runScript() {
+function runRecipe() {
   switch(config.process) {
     case "exportSheets":
       var folder = createVerifyPath(projectPath + " " + fmat12DT());
