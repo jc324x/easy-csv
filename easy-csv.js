@@ -319,6 +319,8 @@ function runRecipe() {
       if (config.zipExports === true) {
         zipFilesIn(folder, config.zipName);
       }
+
+
       break;
     default:
       Logger.log("please check your configuration and try again");
@@ -347,3 +349,16 @@ function zipFilesIn(fldr, name){
 //   } 
 //   return blobs;
 // }
+
+var token = ScriptApp.getOAuthToken();
+
+// var headersOptions = { 
+//   Authorization : 'Bearer '  + token
+//   };
+
+// var options = { 
+//   headers : headersOptions
+//   };
+
+// var csvDoc = UrlFetchApp.fetch(file2.url.apiurl, options);
+
