@@ -127,7 +127,7 @@ function arrSheetNames(ssObj) {
   return arr;
 } 
 
-// arrays & ranges
+// columns & ranges
 
 function numCol(number) {
   var num = number - 1, chr;
@@ -172,6 +172,23 @@ function headerVal(rangeObj){
   return arr;
 }
 
+function arrForColNo(sheetObj, hRow, colIndex){
+  var lColNum  = sheetObj.getLastColumn();
+  var lColABC  = numCol(lColNum);
+  var lRow     = sheetObj.getLastRow();
+  var hRange   = sheetObj.getRange("A" + hRow + ":" + lColABC + hRow);
+  var tColABC  = numCol(colIndex);
+  var rangeObj = sheetObj.getRange(tColABC + (hRow +1) + ":" + tColABC + lRow);
+  var h        = rangeObj.getHeight();
+  var vals     = rangeObj.getValues();
+  var arr      = [];
+  for (var i = 0; i < h; i++) {
+      var val  = vals[i][0];
+      arr.push(String(val));
+  }  
+  return arr;
+}
+
 // datestamp
 
 function fmat12DT() {
@@ -197,7 +214,6 @@ function Scope(sheetObj, a1Notation) {
   } else {
     a1 = a1Notation;
   }
-  Logger.log(a1);
 
   var lColNum  = sheetObj.getLastColumn();
   var lRow     = sheetObj.getLastRow();
@@ -242,7 +258,6 @@ function Scope(sheetObj, a1Notation) {
 
 function exportScopeToCSV(scope, folder) {
   var a1 = scope.getA1Notation();
-  Logger.log(a1);
   if (typeof a1 !== "undefined") {
     var csv = "";
     var values = scope.sheet.getRange(scope.getA1Notation()).getValues();
@@ -305,6 +320,8 @@ function runRecipe() {
     break;
 
     case "expandSheet":
+      // Scope
+      // getColumn(), getNumColumns(), getLastColumn()
       Logger.log("expandSheet");
     break;
 
