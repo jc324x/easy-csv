@@ -1,7 +1,6 @@
 // config 
 
-var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/exportSpreadsheet.json");
-// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
+var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
 // var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
 
 // global
@@ -64,6 +63,7 @@ function createVerifyPath(path) {
   return fldr;
 }
 
+// get folder name, append DS + ".zip"
 function zipFilesIn(fldr, name){
   var validName;
   if (typeof name === "undefined") {
@@ -285,6 +285,9 @@ function expandScopeAndExportToCSV() {
 
 // function convertScopeToCSV(target){
 // }
+
+
+// zip = project + DS .zip
 
 function runRecipe() {
   var folder = createVerifyPath(config.projectPath + " " + fmat12DT());
