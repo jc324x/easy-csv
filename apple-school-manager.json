@@ -26,6 +26,6 @@
          "range":"A:H"
       }
    ],
-   "zipExports":"true",
+   "zipExports":true,
    "zipName":"Archive.zip"
 }

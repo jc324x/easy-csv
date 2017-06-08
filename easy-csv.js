@@ -315,12 +315,11 @@ function runRecipe() {
           expandScopeToCSV(scope, folder);
         } 
       } 
+      Logger.log(config.zipExports);
 
-      if (config.zipExports === true) {
+      if (config.zipExports === "true") {
         zipFilesIn(folder, config.zipName);
       }
-
-
       break;
     default:
       Logger.log("please check your configuration and try again");
