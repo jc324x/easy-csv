@@ -1,7 +1,7 @@
 // config 
 
-var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
-// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
+// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
+var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
 
 // global
 
@@ -63,7 +63,6 @@ function createVerifyPath(path) {
   return fldr;
 }
 
-// get folder name, append DS + ".zip"
 function zipFilesIn(fldr, name){
   var validName;
   if (typeof name === "undefined") {
@@ -278,20 +277,38 @@ function exportScopeToCSV(scope, folder) {
   }
 }
 
-function expandScopeAndExportToCSV() {
-  
+function expandScopeAndExportToCSV(scope, folder) {
+  var firstColumn, secondColumn, header;
+  var a1 = scope.getA1Notation();
+  if (typeof a1 !== "undefined") {
+    var range       = scope.sheet.getRange(scope.getA1Notation());
+    var headers     = headerVal(range);
+    var numColumns  = range.getNumColumns();
+    var numRows     = range.getLastRow() - 1;
+
+    if (config.removeHeaders) {
+      csv = "";
+      firstColumn = arrForColNo(scope.sheet, 1, 1);
+      if (numColumns >= 2) {
+        for (var i = 2; i < numColumns + 1; i++) {
+          header = headers[i - 1];
+          secondColumn = arrForColNo(scope.sheet, 1, i);
+          for (var j = 0; j < firstColumn.length; j++) {
+            csv += firstColumn[j] + ", " + secondColumn[j] + "\n";
+          } 
+          var fileName = header + ".csv";
+          folder.createFile(fileName, csv);
+        }
+      } 
+    } else {
+      // need to write alternate
+    }
+  }
 } 
-
-
-// function convertScopeToCSV(target){
-// }
-
-
-// zip = project + DS .zip
 
 function runRecipe() {
   var folder = createVerifyPath(config.projectPath + " " + fmat12DT());
-  var sheet, scope, zip;
+  var sheet, validSheet, scope, zip;
 
   switch(config.process) {
 
@@ -309,7 +326,7 @@ function runRecipe() {
       for (var j = 0; j < config.targets.length; j++) {
         sheet = config.targets[j].sheet;
         if (checkValIn(sheetNames, sheet)) { 
-          var validSheet = ss.getSheetByName(sheet); 
+          validSheet = ss.getSheetByName(sheet); 
           scope = new Scope(validSheet, config.targets[j].range);
           if (config.chopHeaders === true) {
             scope.chopHeaders();
@@ -323,9 +340,15 @@ function runRecipe() {
     break;
 
     case "expandSheet":
-      // Scope
-      // getColumn(), getNumColumns(), getLastColumn()
-      Logger.log("expandSheet");
+      sheet = config.target.sheet;
+      if (checkValIn(sheetNames, sheet)) { 
+        validSheet = ss.getSheetByName(config.target.sheet );
+        scope = new Scope(validSheet, config.target.range);
+        expandScopeAndExportToCSV(scope, folder);
+      }
+      if (config.zipCSVs === true) {
+        zip = zipFilesIn(folder, config.zipName);
+      }
     break;
 
     default:
