@@ -1,18 +1,18 @@
 // config 
 
-// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
-var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
+var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
+// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
 
 // global
 
-var ui         = SpreadsheetApp.getUi();
 var ss         = SpreadsheetApp.getActiveSpreadsheet();
 var sheets     = ss.getSheets();
 var sheetNames = arrSheetNames(ss);
 
 // menu
 
-function onOpen(e) {
+function onOpen() {
+  var ui = SpreadsheetApp.getUi();
   ui.createMenu('Easy CSV')
     .addItem('Run Recipe', 'runRecipe')
     .addToUi();
@@ -319,6 +319,7 @@ function runRecipe() {
       } 
       if (config.zipCSVs === true) {
         zip = zipFilesIn(folder, config.zipName);
+        Logger.log(zip.getDownloadUrl());
       }
     break;
 
@@ -336,6 +337,7 @@ function runRecipe() {
       } 
       if (config.zipCSVs === true) {
         zip = zipFilesIn(folder, config.zipName);
+        Logger.log(zip.getDownloadUrl());
       }
     break;
 
@@ -348,6 +350,7 @@ function runRecipe() {
       }
       if (config.zipCSVs === true) {
         zip = zipFilesIn(folder, config.zipName);
+        Logger.log(zip.getDownloadUrl());
       }
     break;
 
