@@ -1,7 +1,6 @@
 // config 
 
 var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
-// var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
 
 // global
 
@@ -63,22 +62,27 @@ function createVerifyPath(path) {
   return fldr;
 }
 
-function zipFilesIn(fldr, name){
-  var validName;
+function zipFilesIn(fldrIn, name, fldrOut) {
+  var validName, validFldrOut;
   if (typeof name === "undefined") {
     validName = "Archive.zip";
   } else {
     validName = name;
   }
   var blobs = [];
-  var files = filesIn(fldr);
+  var files = filesIn(fldrIn);
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
     var blob = file.getBlob();
     blobs.push(blob);
   } 
   var zips = Utilities.zip(blobs, validName);
-  var zip = fldr.createFile(zips);
+  if (typeof fldrOut === "undefined") {
+    validFldrOut = fldrIn;
+  } else {
+    validFldrOut = fldrOut;
+  }
+  var zip = validFldrOut.createFile(zips);
   return zip;
 }
 
@@ -128,7 +132,7 @@ function arrSheetNames(ssObj) {
 
 // columns & ranges
 
-function numCol(number) {
+function numToCol(number) {
   var num = number - 1, chr;
   if (num <= 25) {
     chr = String.fromCharCode(97 + num).toUpperCase();
@@ -148,7 +152,7 @@ function numCol(number) {
   }
 }
 
-function colNum(column) {
+function colToNum(column) {
   var col = column.toUpperCase();
   var chr0, chr1;
   if (col.length === 1)  {
@@ -161,7 +165,7 @@ function colNum(column) {
   }
 }
 
-function headerVal(rangeObj){
+function arrheaderVal(rangeObj){
   var vals = rangeObj.getValues();
   var arr  = [];
   for (var i = 0; i < vals[0].length; i++) {
@@ -173,10 +177,10 @@ function headerVal(rangeObj){
 
 function arrForColNo(sheetObj, hRow, colIndex){
   var lColNum  = sheetObj.getLastColumn();
-  var lColABC  = numCol(lColNum);
+  var lColABC  = numToCol(lColNum);
   var lRow     = sheetObj.getLastRow();
   var hRange   = sheetObj.getRange("A" + hRow + ":" + lColABC + hRow);
-  var tColABC  = numCol(colIndex);
+  var tColABC  = numToCol(colIndex);
   var rangeObj = sheetObj.getRange(tColABC + (hRow +1) + ":" + tColABC + lRow);
   var h        = rangeObj.getHeight();
   var vals     = rangeObj.getValues();
@@ -219,9 +223,9 @@ function Scope(sheetObj, a1Notation) {
   var split    = a1.split(":");
 
   if (split.length == 2) {
-    startCol = colNum(split[0].match(/\D/g,'').toString());
+    startCol = colToNum(split[0].match(/\D/g,'').toString());
     startRow = parseInt(split[0].match(/\d+/g));
-    endCol = colNum(split[1].match(/\D/g,'').toString());
+    endCol = colToNum(split[1].match(/\D/g,'').toString());
     endRow = parseInt(split[1].match(/\d+/g));
   }
 
@@ -249,7 +253,7 @@ function Scope(sheetObj, a1Notation) {
 
   this.getA1Notation = function() {
     if (this.endCol >= 1 && this.endRow >= 1) {
-      var _a1Notation = numCol(this.startCol) + this.startRow + ":" + numCol(this.endCol) + this.endRow;
+      var _a1Notation = numToCol(this.startCol) + this.startRow + ":" + numToCol(this.endCol) + this.endRow;
       return  _a1Notation;
     }
   };
@@ -281,16 +285,15 @@ function expandScopeAndExportToCSV(scope, folder) {
   var firstColumn, secondColumn, header;
   var a1 = scope.getA1Notation();
   if (typeof a1 !== "undefined") {
-    var range       = scope.sheet.getRange(scope.getA1Notation());
-    var headers     = headerVal(range);
-    var numColumns  = range.getNumColumns();
-    var numRows     = range.getLastRow() - 1;
-
+    var range   = scope.sheet.getRange(scope.getA1Notation());
+    var headers = arrheaderVal(range);
+    var numCols = range.getNumColumns();
+    var numRows = range.getLastRow() - 1;
     if (config.removeHeaders) {
       csv = "";
       firstColumn = arrForColNo(scope.sheet, 1, 1);
-      if (numColumns >= 2) {
-        for (var i = 2; i < numColumns + 1; i++) {
+      if (numCols >= 2) {
+        for (var i = 2; i < numCols + 1; i++) {
           header = headers[i - 1];
           secondColumn = arrForColNo(scope.sheet, 1, i);
           for (var j = 0; j < firstColumn.length; j++) {
@@ -319,7 +322,6 @@ function runRecipe() {
       } 
       if (config.zipCSVs === true) {
         zip = zipFilesIn(folder, config.zipName);
-        Logger.log(zip.getDownloadUrl());
       }
     break;
 
@@ -337,7 +339,6 @@ function runRecipe() {
       } 
       if (config.zipCSVs === true) {
         zip = zipFilesIn(folder, config.zipName);
-        Logger.log(zip.getDownloadUrl());
       }
     break;
 
@@ -350,7 +351,6 @@ function runRecipe() {
       }
       if (config.zipCSVs === true) {
         zip = zipFilesIn(folder, config.zipName);
-        Logger.log(zip.getDownloadUrl());
       }
     break;
 
