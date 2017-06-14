@@ -56,6 +56,30 @@ function createVerifyPath(path) {
   return fldr;
 }
 
+function findFileAtPath(path) {
+  var arr  = path.split('/');
+  var file = arr[arr.length -1];
+  var fldr, fi;
+  for (i = 0; i < arr.length - 1; i++) {
+    if (i === 0) {
+      fi = DriveApp.getRootFolder().getFoldersByName(arr[i]);
+      if (fi.hasNext()) {
+        fldr = fi.next();
+      } else { 
+        return null;
+      }
+    } else if (i >= 1) {
+        fi = fldr.getFoldersByName(arr[i]);
+        if (fi.hasNext()) {
+          fldr = fi.next();
+        } else { 
+          return null;
+        }
+    }
+  } 
+  return findFileIn(fldr, file);
+} 
+
 function zipFilesIn(fldrIn, name, fldrOut) {
   var validName, validFldrOut;
   if (typeof name === "undefined") {
