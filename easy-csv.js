@@ -2,18 +2,12 @@
 
 var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/apple-school-manager.json");
 
-// global
-
-var ss         = SpreadsheetApp.getActiveSpreadsheet();
-var sheets     = ss.getSheets();
-var sheetNames = arrSheetNames(ss);
-
 // menu
 
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu('Easy CSV')
-    .addItem('Run Recipe', 'runRecipe')
+  ui.createMenu("Easy CSV")
+    .addItem("Run Recipe", "runRecipe")
     .addToUi();
 }
 
@@ -310,7 +304,11 @@ function expandScopeAndExportToCSV(scope, folder) {
 } 
 
 function runRecipe() {
-  var folder = createVerifyPath(config.projectPath + " " + fmat12DT());
+
+  var ss         = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets     = ss.getSheets();
+  var sheetNames = arrSheetNames(ss);
+  var folder     = createVerifyPath(config.projectPath + " " + fmat12DT());
   var sheet, validSheet, scope, zip;
 
   switch(config.process) {
