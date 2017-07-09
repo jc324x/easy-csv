@@ -1,3 +1,18 @@
+// global + onOpen
+// var ui = SpreadsheetApp.getUi();
+// var uP = PropertiesService.getUserProperties();
+
+// function onOpen() {
+//   ui.createMenu("Easy CSV")
+//   .addItem("Run Script", "runScript")
+//   .addSeparator()
+//   .addSubMenu(ui.createMenu("Configuration")
+//     .addItem("Set Configuration", "setConfiguration")
+//     .addItem("Show Configuration", "showConfiguration")
+//     .addItem("Clear Configuration", "clearConfiguration"))
+//   .addToUi();
+// }
+
 // config 
 
 var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
@@ -10,6 +25,8 @@ function onOpen() {
     .addItem("Run Recipe", "runRecipe")
     .addToUi();
 }
+
+// v0.2-beta -> google-apps-script-cheat-sheet
 
 // files and folders
 
