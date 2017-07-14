@@ -1,30 +1,104 @@
 // global + onOpen
-// var ui = SpreadsheetApp.getUi();
-// var uP = PropertiesService.getUserProperties();
+var ui = SpreadsheetApp.getUi();
+var uP = PropertiesService.getUserProperties();
 
-// function onOpen() {
-//   ui.createMenu("Easy CSV")
-//   .addItem("Run Script", "runScript")
-//   .addSeparator()
-//   .addSubMenu(ui.createMenu("Configuration")
-//     .addItem("Set Configuration", "setConfiguration")
-//     .addItem("Show Configuration", "showConfiguration")
-//     .addItem("Clear Configuration", "clearConfiguration"))
-//   .addToUi();
-// }
+function onOpen() {
+  ui.createMenu("Easy CSV")
+  .addItem("Run Script", "runScript")
+  .addSeparator()
+  .addSubMenu(ui.createMenu("Configuration")
+    .addItem("Set Configuration", "setConfiguration")
+    .addItem("Show Configuration", "showConfiguration")
+    .addItem("Clear Configuration", "clearConfiguration"))
+  .addToUi();
+}
 
 // config 
 
-var config = importConfiguration("https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json");
+// -> feed into main.js
+
+function setConfiguration() {
+  var uiPrompt = ui.prompt(
+      "Please enter a URL or a path to a file in Drive:",
+      ui.ButtonSet.OK_CANCEL);
+  var button = uiPrompt.getSelectedButton();
+  if (button == ui.Button.OK) {
+    var text   = uiPrompt.getResponseText();
+    var config = JSON.stringify(objFromUrlOrFile(text));
+    var uProp  = PropertiesService.getUserProperties();
+    uProp.setProperty("config", config);
+  } 
+}
+
+function showConfiguration() {
+  var uProp  = PropertiesService.getUserProperties();
+  var config = uProp.getProperty("config");
+  if (config) {
+    ui.alert(config);
+  } else {
+    ui.alert("No configuration set.");
+  }
+}
+
+function clearConfiguration() {
+  var uProp = PropertiesService.getUserProperties();
+  uProp.deleteAllProperties();
+  ui.alert("All settings cleared.");
+}
+
+// json
+
+/**
+ * Returns an object from a URL.
+ *
+ * @param {string} url
+ * @returns {Object}
+ */
+
+function objFromUrl(url) {
+  var rsp  = UrlFetchApp.fetch(url);
+  var data = rsp.getContentText();
+  return JSON.parse(data);
+} 
+
+/**
+ * Returns an object from a file in Drive.
+ *
+ * @param {File} file
+ * @returns {Object}
+ */
+
+function objFromFile(file) {
+  var data = file.getBlob().getDataAsString();
+  return JSON.parse(data);
+} 
+
+/**
+ * Returns an object from a URL or from a file in Drive.
+ *
+ * @param {string || File} input
+ * @returns {Object}
+ */
+
+function objFromUrlOrFile(input) {
+  var regExp = new RegExp("^(http|https)://");
+  var test   = regExp.test(input);
+  if (test) {
+    return objFromUrl(input);
+  } else {
+    var file = findFileAtPath(input); 
+    return objFromFile(file);
+  }
+}
 
 // menu
 
-function onOpen() {
-  var ui = SpreadsheetApp.getUi();
-  ui.createMenu("Easy CSV")
-    .addItem("Run Recipe", "runRecipe")
-    .addToUi();
-}
+// function onOpen() {
+//   var ui = SpreadsheetApp.getUi();
+//   ui.createMenu("Easy CSV")
+//     .addItem("Run Recipe", "runRecipe")
+//     .addToUi();
+// }
 
 // v0.2-beta -> google-apps-script-cheat-sheet
 
@@ -316,6 +390,7 @@ function exportScopeToCSV(scope, folder) {
   }
 }
 
+// FLAG -> config isn't global
 function expandScopeAndExportToCSV(scope, folder) {
   var firstColumn, secondColumn, header;
   var a1 = scope.getA1Notation();
@@ -344,12 +419,14 @@ function expandScopeAndExportToCSV(scope, folder) {
   }
 } 
 
-function runRecipe() {
+function runScript() {
 
+  var config     = JSON.parse(uP.getProperty("config"));
   var ss         = SpreadsheetApp.getActiveSpreadsheet();
   var sheets     = ss.getSheets();
   var sheetNames = arrSheetNames(ss);
   var folder     = createVerifyPath(config.projectPath + " " + fmat12DT());
+
   var sheet, validSheet, scope, zip;
 
   switch(config.process) {
