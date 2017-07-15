@@ -7,6 +7,7 @@
 // global, onOpen(), config //
 //////////////////////////////
 
+var ss    = SpreadsheetApp.getActiveSpreadsheet();
 var ui    = SpreadsheetApp.getUi();
 var uProp = PropertiesService.getUserProperties();
 
@@ -407,7 +408,6 @@ function expandScopeAndExportToCSV(scope, folder, config) {
 function runScript() {
 
   var config     = JSON.parse(uProp.getProperty("config"));
-  var ss         = SpreadsheetApp.getActiveSpreadsheet();
   var sheets     = ss.getSheets();
   var sheetNames = arrSheetNames(ss);
   var folder     = createVerifyPath(config.projectPath + " " + fmat12DT());
