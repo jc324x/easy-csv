@@ -12,6 +12,8 @@
 
 #### expandSheet ####
 
+[jss-mutt](https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json "jss-mutt")
+
 ```json
 {
    "process":"expandSheet",
