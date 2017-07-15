@@ -1,5 +1,7 @@
 # Easy CSV #
 
+## Values ##
+
 | Property      | Value      | Required | Process |
 | ------------- | :--------  | :---:    | :-----: |
 | process       | `string`   | yes      | all
@@ -28,9 +30,14 @@
 
 ### Input / Output ###
 
+![alt text][expandSheet-sheet]
+
+[expandSheet-sheet]: https://github.com/jcodesmn/easy-csv/blob/master/images/expandSheet/sheet.png "sheet"
+
 ![alt text][sheet]
 
 [sheet]: https://github.com/jcodesmn/easy-csv/blob/master/images/expandSheet/sheet.png "sheet"
+
 
 ## exportSheets ##
 
