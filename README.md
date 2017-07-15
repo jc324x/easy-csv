@@ -25,10 +25,6 @@
    "zipName":"jss-mutt.zip"
 }
 ```
-### Use Case ### 
-
-The [JSS MUT](http://jssmut.weebly.com/ "JSS MUT Landing Page") is a great tool for JSS administrators.
-The expandSheet process allows JSS admins to work from a single sheet. 
 
 ## exportSheets ##
 
