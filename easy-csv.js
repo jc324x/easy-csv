@@ -188,7 +188,7 @@ function findFileAtPath(path) {
 // FLAG -> add to main.js
 
 function zipFilesIn(fldrIn, name, fldrOut) {
-  var validName, validFldrOut;
+  var validName;
   if (typeof name === "undefined") {
     validName = "Archive.zip";
   } else {
@@ -203,12 +203,10 @@ function zipFilesIn(fldrIn, name, fldrOut) {
   } 
   var zips = Utilities.zip(blobs, validName);
   if (typeof fldrOut === "undefined") {
-    validFldrOut = fldrIn;
+    return fldrIn.createFile(zips);
   } else {
-    validFldrOut = fldrOut;
+    return fldrOut.createFile(zips);
   }
-  var zip = validFldrOut.createFile(zips);
-  return zip;
 }
 
 // arrays 
