@@ -26,6 +26,11 @@
 }
 ```
 
+### Input / Output ###
+
+![alt text][sheet]
+[sheet]: https://github.com/jcodesmn/easy-csv/blob/master/images/expandSheet/sheet.png "sheet"
+
 ## exportSheets ##
 
 ```json
