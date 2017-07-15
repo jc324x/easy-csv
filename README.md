@@ -2,9 +2,9 @@
 
 | Property      | Value                                                       | Process |
 | ------------- | :------------------------------------------------------     | :-----: |
-| process       | `string`  -> expandSheet / exportSheets / exportSpreadsheet | all     |
-| projectPath   | `string`  -> path to output folder                          | all     |
-| removeHeaders | `boolean` ->                                                | $1      |
+| process       | `string  ->` expandSheet / exportSheets / exportSpreadsheet | all     |
+| projectPath   | `string  ->` path to output folder                          | all     |
+| removeHeaders | `boolean ->`                                                | $1      |
 
 #### expandSheet ####
 
