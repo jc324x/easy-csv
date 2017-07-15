@@ -1,6 +1,6 @@
 {
-   "projectPath":"easy-csv-exports/jss-mutt",
    "process":"expandSheet",
+   "projectPath":"easy-csv-exports/jss-mutt",
    "removeHeaders":true,
    "target":{
       "sheet":"jss-mutt",

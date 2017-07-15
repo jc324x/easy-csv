@@ -1,6 +1,6 @@
 {
-   "projectPath":"easy-csv-exports/apple-school-manager",
    "process":"exportSheets",
+   "projectPath":"easy-csv-exports/apple-school-manager",
    "targets":[
       {
          "sheet":"locations"

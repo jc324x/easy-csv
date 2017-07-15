@@ -1,4 +1,10 @@
-### Three Processes ###
+# Easy CSV #
+
+| Property      | Value                                                   | Process |
+| ------------- | :-------------:                                         | -----:  |
+| process       | `string` expandSheet / exportSheets / exportSpreadsheet | all     |
+| projectPath   | `string` path to output folder                          | all     |
+| removeHeaders | `boolean`                                               | $1      |
 
 #### expandSheet ####
 
@@ -16,16 +22,6 @@
 }
 ```
 
-`projectPath` | `string`  
-Path to the output folder. Files in the path will be created if they don't already exist.
-
-`removeHeaders` | `boolean`  
-
-`target` | `string`  
-
-`zipCSVs` | `boolean`  
-
-`zipName` | `string`  
 
 #### exportSheets ####
 
@@ -73,3 +69,15 @@ Path to the output folder. Files in the path will be created if they don't alrea
    "zipName":"Archive.zip"
 }
 ```
+
+`projectPath` | `string`  
+Path to the output folder. Files in the path will be created if they don't already exist.
+
+`removeHeaders` | `boolean`  
+
+`target` | `string`  
+
+`zipCSVs` | `boolean`  
+
+`zipName` | `string`  
+
