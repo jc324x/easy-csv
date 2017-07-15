@@ -1,6 +1,19 @@
-// global + onOpen
-var ui = SpreadsheetApp.getUi();
-var uP = PropertiesService.getUserProperties();
+////////////////////////////////////////////////////////////////
+//                         v0.2-beta                          //
+// https://github.com/jcodesmn/google-apps-script-cheat-sheet //
+////////////////////////////////////////////////////////////////
+
+//////////////////////////////
+// global, onOpen(), config //
+//////////////////////////////
+
+var ui    = SpreadsheetApp.getUi();
+var uProp = PropertiesService.getUserProperties();
+
+/**
+ * @requires global ui / uProp vlues 
+ * Creates a menu with that allows the user to set the configuration options and run the script.
+ */
 
 function onOpen() {
   ui.createMenu("Easy CSV")
@@ -13,9 +26,10 @@ function onOpen() {
   .addToUi();
 }
 
-// config 
-
-// -> feed into main.js
+/**
+ * @requires global ui / uProp values
+ * Parses JSON at the value given and sets config equal to the stringified result.
+ */
 
 function setConfiguration() {
   var uiPrompt = ui.prompt(
@@ -25,13 +39,16 @@ function setConfiguration() {
   if (button == ui.Button.OK) {
     var text   = uiPrompt.getResponseText();
     var config = JSON.stringify(objFromUrlOrFile(text));
-    var uProp  = PropertiesService.getUserProperties();
     uProp.setProperty("config", config);
   } 
 }
 
+/**
+ * @requires global ui / uProp values
+ * Displays an alert of the config value or a displays a message if config is unset.
+ */
+
 function showConfiguration() {
-  var uProp  = PropertiesService.getUserProperties();
   var config = uProp.getProperty("config");
   if (config) {
     ui.alert(config);
@@ -40,13 +57,19 @@ function showConfiguration() {
   }
 }
 
+/**
+ * @requires global ui / uProp values
+ * Clears out all user properties.
+ */
+
 function clearConfiguration() {
-  var uProp = PropertiesService.getUserProperties();
   uProp.deleteAllProperties();
   ui.alert("All settings cleared.");
 }
 
-// json
+//////////
+// JSON //
+//////////
 
 /**
  * Returns an object from a URL.
@@ -91,18 +114,9 @@ function objFromUrlOrFile(input) {
   }
 }
 
-// menu
-
-// function onOpen() {
-//   var ui = SpreadsheetApp.getUi();
-//   ui.createMenu("Easy CSV")
-//     .addItem("Run Recipe", "runRecipe")
-//     .addToUi();
-// }
-
-// v0.2-beta -> google-apps-script-cheat-sheet
-
-// files and folders
+///////////////////////
+// Files and Folders //
+///////////////////////
 
 function filesIn(fldr) {
   var fi  = fldr.getFiles();
@@ -171,6 +185,8 @@ function findFileAtPath(path) {
   return findFileIn(fldr, file);
 } 
 
+// FLAG -> add to main.js
+
 function zipFilesIn(fldrIn, name, fldrOut) {
   var validName, validFldrOut;
   if (typeof name === "undefined") {
@@ -193,35 +209,6 @@ function zipFilesIn(fldrIn, name, fldrOut) {
   }
   var zip = validFldrOut.createFile(zips);
   return zip;
-}
-
-// json
-
-function jsonFromUrl(url) {
-  var rsp  = UrlFetchApp.fetch(url);
-  var data = rsp.getContentText();
-  var json = JSON.parse(data);
-  return json;
-} 
-
-function jsonFromFile(file) {
-  var data = file.getBlob().getDataAsString();
-  var json = JSON.parse(data);
-  return json;
-} 
-
-function importConfiguration(scriptConfig) {
-  var regExp = new RegExp("^(http|https)://");
-  var test   = regExp.test(scriptConfig);
-  var json;
-  if (test) {
-    json = jsonFromUrl(scriptConfig); 
-    return json;
-  } else {
-    var file = findFileAtPath(scriptConfig); 
-    json = jsonFromFile(file); 
-    return json;
-  }
 }
 
 // arrays 
@@ -317,18 +304,18 @@ function fmat12DT() {
   return d.join("-") + " " + t.join(":") + " " + s;
 }
 
-function Scope(sheetObj, a1Notation) {
+function Scope(sheet, a1Notation) {
   var a1, startCol, startRow, endCol, endRow;
-  var datarange = sheetObj.getDataRange().getA1Notation();
+  var dataRange = sheet.getDataRange().getA1Notation();
 
   if (typeof a1Notation === "undefined") {
-    a1 = datarange;
+    a1 = dataRange;
   } else {
     a1 = a1Notation;
   }
 
-  var lColNum  = sheetObj.getLastColumn();
-  var lRow     = sheetObj.getLastRow();
+  var lColNum  = sheet.getLastColumn();
+  var lRow     = sheet.getLastRow();
   var split    = a1.split(":");
 
   if (split.length == 2) {
@@ -350,7 +337,7 @@ function Scope(sheetObj, a1Notation) {
     endRow = lRow;
   }
 
-  this.sheet    = sheetObj;
+  this.sheet    = sheet;
   this.startCol = startCol;
   this.startRow = startRow;
   this.endCol   = endCol;
@@ -362,8 +349,7 @@ function Scope(sheetObj, a1Notation) {
 
   this.getA1Notation = function() {
     if (this.endCol >= 1 && this.endRow >= 1) {
-      var _a1Notation = numToCol(this.startCol) + this.startRow + ":" + numToCol(this.endCol) + this.endRow;
-      return  _a1Notation;
+      return numToCol(this.startCol) + this.startRow + ":" + numToCol(this.endCol) + this.endRow;
     }
   };
 } 
@@ -391,8 +377,9 @@ function exportScopeToCSV(scope, folder) {
 }
 
 // FLAG -> config isn't global
+
 function expandScopeAndExportToCSV(scope, folder) {
-  var firstColumn, secondColumn, header;
+  var firstColumn, secondColumn, header, csv;
   var a1 = scope.getA1Notation();
   if (typeof a1 !== "undefined") {
     var range   = scope.sheet.getRange(scope.getA1Notation());
@@ -421,7 +408,7 @@ function expandScopeAndExportToCSV(scope, folder) {
 
 function runScript() {
 
-  var config     = JSON.parse(uP.getProperty("config"));
+  var config     = JSON.parse(uProp.getProperty("config"));
   var ss         = SpreadsheetApp.getActiveSpreadsheet();
   var sheets     = ss.getSheets();
   var sheetNames = arrSheetNames(ss);
