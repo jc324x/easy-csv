@@ -1,10 +1,14 @@
 # Easy CSV #
 
-| Property      | Value                                                       | Process |
-| ------------- | :------------------------------------------------------     | :-----: |
-| process       | `string  ->` expandSheet / exportSheets / exportSpreadsheet | all     |
-| projectPath   | `string  ->` path to output folder                          | all     |
-| removeHeaders | `boolean ->`                                                | $1      |
+| Property      | Value                                                   | Required | Process |
+| ------------- | :------------------------------------------------------ | :---:    | :-----: |
+| process       | `string` expandSheet / exportSheets / exportSpreadsheet | yes      | all
+| projectPath   | `string` path to output folder                          | yes      | all
+| removeHeaders | `boolean` if set, exclude the top row                   | no       | all
+| target        | `Object`                                                |          |
+| targets       | `Object[]`                                              |          |
+| zipCSVs       | `boolean`                                               |          |
+| zipName       | `string`                                                |          |
 
 #### expandSheet ####
 
