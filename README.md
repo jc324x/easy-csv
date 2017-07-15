@@ -10,9 +10,7 @@
 | zipCSVs       | `boolean`  | no       | all
 | zipName       | `string`   | no       | all
 
-#### expandSheet ####
-
-[jss-mutt](https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json "jss-mutt")
+## expandSheet ##
 
 ```json
 {
@@ -27,8 +25,9 @@
    "zipName":"jss-mutt.zip"
 }
 ```
+[jss-mutt] (https://raw.githubusercontent.com/jcodesmn/easy-csv/master/jss-mutt.json "jss-mutt")
 
-#### exportSheets ####
+## exportSheets ##
 
 ```json
 {
@@ -64,7 +63,7 @@
 }
 ```
 
-#### exportSpreadsheet ####
+## exportSpreadsheet ##
 
 ```json
 {
