@@ -139,6 +139,8 @@ function foldersIn(fldr) {
   return arr;
 }
 
+// -- FLAG -- remove leading '/' just in case?
+
 function createVerifyPath(path) {
   var arr = path.split('/');
   var fldr;

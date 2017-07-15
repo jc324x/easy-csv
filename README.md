@@ -1,13 +1,11 @@
-## Configuring `Config` ##
-
-### Three Different Processes ###
+### Three Processes ###
 
 #### expandSheet ####
 
 ```json
 {
-   "projectPath":"easy-csv-exports/jss-mutt",
    "process":"expandSheet",
+   "projectPath":"easy-csv-exports/jss-mutt",
    "removeHeaders":true,
    "target":{
       "sheet":"jss-mutt",
@@ -17,6 +15,12 @@
    "zipName":"jss-mutt.zip"
 }
 ```
+
+`projectPath` -> string
+Path to the output folder. Files in the path will be created if they don't already exist.
+
+`removeHeaders`
+
 
 #### exportSheets ####
 
