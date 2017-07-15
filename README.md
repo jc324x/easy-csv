@@ -1,14 +1,14 @@
 # Easy CSV #
 
-| Property      | Value                                                   | Required | Process |
-| ------------- | :------------------------------------------------------ | :---:    | :-----: |
-| process       | `string` expandSheet / exportSheets / exportSpreadsheet | yes      | all
-| projectPath   | `string` path to output folder                          | yes      | all
-| removeHeaders | `boolean` if set, exclude the top row                   | no       | all
-| target        | `Object`                                                |          |
-| targets       | `Object[]`                                              |          |
-| zipCSVs       | `boolean`                                               |          |
-| zipName       | `string`                                                |          |
+| Property      | Value      | Required | Process |
+| ------------- | :--------  | :---:    | :-----: |
+| process       | `string`   | yes      | all
+| projectPath   | `string`   | yes      | all
+| removeHeaders | `boolean`  | no       | all
+| target        | `Object`   | yes      | expandSheet
+| targets       | `Object[]` | yes      | exportSheets
+| zipCSVs       | `boolean`  | no       | all
+| zipName       | `string`   | no       | all
 
 #### expandSheet ####
 
@@ -25,7 +25,6 @@
    "zipName":"jss-mutt.zip"
 }
 ```
-
 
 #### exportSheets ####
 
