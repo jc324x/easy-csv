@@ -32,9 +32,9 @@
 
 ![alt text][expandSheet-sheet]
 
-[expandSheet-sheet]: https://github.com/jcodesmn/easy-csv/blob/master/images/expandSheet/sheet.png "sheet"
+[expandSheet-sheet]: https://github.com/jcodesmn/easy-csv/blob/master/images/expandSheet/sheet.png "expandSheet-sheet"
 
-![alt text][sheet]
+![alt text][expandSheet-]
 
 [sheet]: https://github.com/jcodesmn/easy-csv/blob/master/images/expandSheet/sheet.png "sheet"
 
