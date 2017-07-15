@@ -16,11 +16,16 @@
 }
 ```
 
-`projectPath` -> string
+`projectPath` | `string`
 Path to the output folder. Files in the path will be created if they don't already exist.
 
-`removeHeaders`
+`removeHeaders` | `boolean`
 
+`target` | `string`
+
+`zipCSVs` | `boolean`
+
+`zipName` | `string`
 
 #### exportSheets ####
 
