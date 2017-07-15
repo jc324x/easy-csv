@@ -378,7 +378,7 @@ function exportScopeToCSV(scope, folder) {
 
 // FLAG -> config isn't global
 
-function expandScopeAndExportToCSV(scope, folder) {
+function expandScopeAndExportToCSV(scope, folder, config) {
   var firstColumn, secondColumn, header, csv;
   var a1 = scope.getA1Notation();
   if (typeof a1 !== "undefined") {
@@ -450,7 +450,7 @@ function runScript() {
       if (checkValIn(sheetNames, sheet)) { 
         validSheet = ss.getSheetByName(config.target.sheet );
         scope = new Scope(validSheet, config.target.range);
-        expandScopeAndExportToCSV(scope, folder);
+        expandScopeAndExportToCSV(scope, folder, config);
       }
       if (config.zipCSVs === true) {
         zip = zipFilesIn(folder, config.zipName);
