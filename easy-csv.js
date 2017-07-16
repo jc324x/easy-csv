@@ -1,18 +1,13 @@
-////////////////////////////////////////////////////////////////
-//                         v0.2-beta                          //
-// https://github.com/jcodesmn/google-apps-script-cheat-sheet //
-////////////////////////////////////////////////////////////////
+// v0.2-beta || https://github.com/jcodesmn/google-apps-script-cheat-sheet
 
-//////////////////////////////
-// global, onOpen(), config //
-//////////////////////////////
+// global + onOpen()
 
 var ss    = SpreadsheetApp.getActiveSpreadsheet();
 var ui    = SpreadsheetApp.getUi();
 var uProp = PropertiesService.getUserProperties();
 
 /**
- * @requires global ui / uProp vlues 
+ * @requires global ui / uProp values 
  * Creates a menu with that allows the user to set the configuration options and run the script.
  */
 
@@ -29,7 +24,7 @@ function onOpen() {
 
 /**
  * @requires global ui / uProp values
- * Parses JSON at the value given and sets config equal to the stringified result.
+ * Parses JSON from a URL or file and sets the user property 'config'
  */
 
 function setConfiguration() {
@@ -46,7 +41,7 @@ function setConfiguration() {
 
 /**
  * @requires global ui / uProp values
- * Displays an alert of the config value or a displays a message if config is unset.
+ * Displays the value of user property 'config' in an alert
  */
 
 function showConfiguration() {
@@ -67,10 +62,6 @@ function clearConfiguration() {
   uProp.deleteAllProperties();
   ui.alert("All settings cleared.");
 }
-
-//////////
-// JSON //
-//////////
 
 /**
  * Returns an object from a URL.
@@ -98,7 +89,7 @@ function objFromFile(file) {
 } 
 
 /**
- * Returns an object from a URL or from a file in Drive.
+ * Returns an object from a URL or a file in Drive.
  *
  * @param {string || File} input
  * @returns {Object}
@@ -115,9 +106,12 @@ function objFromUrlOrFile(input) {
   }
 }
 
-///////////////////////
-// Files and Folders //
-///////////////////////
+/**
+ * Returns an array of files found at the top level of a folder.
+ *
+ * @param {Folder} fldr
+ * @returns {File[]}
+ */
 
 function filesIn(fldr) {
   var fi  = fldr.getFiles();
@@ -129,6 +123,13 @@ function filesIn(fldr) {
   return arr;
 }
 
+/**
+ * Returns an array of all folders in a folder.
+ *
+ * @param {Folder} fldr
+ * @returns {Folder[]}
+ */
+
 function foldersIn(fldr) {
   var fi  = fldr.getFolders();
   var arr = [];
@@ -139,10 +140,19 @@ function foldersIn(fldr) {
   return arr;
 }
 
-// -- FLAG -- remove leading '/' just in case?
+/**
+ * Returns a folder at the end of a folder path.
+ * Folders in the path are created if they don't already exist.
+ *
+ * @param {string} path
+ * @returns {Folder}
+ */
 
 function createVerifyPath(path) {
-  var arr = path.split('/');
+  if (path.charAt(0) === "/") {
+    path = path.substr(1);
+  }
+  var arr = path.split("/");
   var fldr;
   for (i = 0; i < arr.length; i++) {
     var fi = DriveApp.getRootFolder().getFoldersByName(arr[i]);
@@ -164,8 +174,54 @@ function createVerifyPath(path) {
   return fldr;
 }
 
+/**
+ * Returns a file found at the top level of a folder. 
+ *
+ * @requires filesIn()
+ * @requires fileNames()
+ * @requires checkValIn()
+ * @param {Folder} fldr
+ * @param {string} name
+ * @returns {File}
+ */
+
+function findFileIn(fldr, name) {
+  var files = filesIn(fldr);
+  var names = fileNames(files);
+  if (checkValIn(names, name)) {
+    var file = fldr.getFilesByName(name).next();
+    return file;
+  }
+}
+
+/**
+ *  Returns an array of file names.
+ *
+ * @param {File[]} files
+ * @returns {string[]}
+ */
+
+function fileNames(files) {
+  var arr = [];
+  for (var i = 0; i < files.length; i++) {
+    var name = files[i].getName();
+    arr.push(name);
+  }
+  return arr;
+}
+
+/**
+ * Returns the file at the end of a path.
+ *
+ * @param {string} path
+ * @returns {File}
+ */
+
 function findFileAtPath(path) {
-  var arr  = path.split('/');
+  if (path.charAt(0) === "/") {
+    path = path.substr(1);
+  }
+  var arr  = path.split("/");
   var file = arr[arr.length -1];
   var fldr, fi;
   for (i = 0; i < arr.length - 1; i++) {
@@ -188,48 +244,63 @@ function findFileAtPath(path) {
   return findFileIn(fldr, file);
 } 
 
-// FLAG -> add to main.js
+/**
+ * Returns a zipped file. 
+ *
+ * @param {Folder} fldr
+ * @param {string} name
+ * @returns {File}
+ */
 
-function zipFilesIn(fldrIn, name, fldrOut) {
-  var validName;
-  if (typeof name === "undefined") {
-    validName = "Archive.zip";
-  } else {
-    validName = name;
-  }
+function zipFilesIn(fldr, name) {
   var blobs = [];
-  var files = filesIn(fldrIn);
+  var files = filesIn(fldr);
   for (var i = 0; i < files.length; i++) {
-    var file = files[i];
-    var blob = file.getBlob();
-    blobs.push(blob);
+    blobs.push(files[i].getBlob());
   } 
-  var zips = Utilities.zip(blobs, validName);
-  if (typeof fldrOut === "undefined") {
-    return fldrIn.createFile(zips);
-  } else {
-    return fldrOut.createFile(zips);
-  }
+  var zips = Utilities.zip(blobs, name);
+  fldr.createFile(zips);
+  return findFileIn(fldr, name);
 }
 
-// arrays 
+/**
+ * Returns true if the value is in the array.
+ *
+ * @param {Array} arr
+ * @param {*} val
+ * @returns {boolean}
+ */
 
 function checkValIn(arr, val) { 
   return arr.indexOf(val) > -1; 
 }
 
-function arrSheetNames(ssObj) {
-  var sheets = ssObj.getSheets();
-  var arr    = [];
+/**
+ * Returns an array of the names of the sheets in a spreadsheet.
+ *
+ * @param {Spreadsheet} ss
+ * @returns {string[]}
+ */
+
+function arrSheetNames(ss) {
+  var sheets = ss.getSheets();
+  var result = [];
   for (var i = 0; i < sheets.length; i++) {
-    arr.push(sheets[i].getName());
+    result.push(sheets[i].getName());
   } 
-  return arr;
+  return result;
 } 
 
-// columns & ranges
+/**
+ * Returns the column number as a alphabetical column value.
+ * Columns are indexed from 1, not from 0.
+ * "CZ" (103) is the highest supported value.
+ *
+ * @param {number} number
+ * @returns {string}
+ */
 
-function numToCol(number) {
+function numCol(number) {
   var num = number - 1, chr;
   if (num <= 25) {
     chr = String.fromCharCode(97 + num).toUpperCase();
@@ -249,9 +320,15 @@ function numToCol(number) {
   }
 }
 
-function colToNum(column) {
-  var col = column.toUpperCase();
-  var chr0, chr1;
+/**
+ * Returns an alphabetical column value as a number.
+ *
+ * @param {string} column
+ * @returns {number}
+ */
+
+function colNum(column) {
+  var col = column.toUpperCase(), chr0, chr1;
   if (col.length === 1)  {
     chr0 = col.charCodeAt(0) - 64;
     return chr0;
@@ -262,7 +339,14 @@ function colToNum(column) {
   }
 }
 
-function arrheaderVal(rangeObj){
+/**
+ * Returns an array of values for the top row of a range object.
+ *
+ * @param {Range} rangeObj
+ * @returns {Array}
+ */
+
+function headerVal(rangeObj){
   var vals = rangeObj.getValues();
   var arr  = [];
   for (var i = 0; i < vals[0].length; i++) {
@@ -272,30 +356,43 @@ function arrheaderVal(rangeObj){
   return arr;
 }
 
-function arrForColNo(sheetObj, hRow, colIndex){
-  var lColNum  = sheetObj.getLastColumn();
-  var lColABC  = numToCol(lColNum);
-  var lRow     = sheetObj.getLastRow();
-  var hRange   = sheetObj.getRange("A" + hRow + ":" + lColABC + hRow);
-  var tColABC  = numToCol(colIndex);
-  var rangeObj = sheetObj.getRange(tColABC + (hRow +1) + ":" + tColABC + lRow);
-  var h        = rangeObj.getHeight();
+/**
+ * Returns an array containing all values in a column.
+ *
+ * @param {Sheet} sheet
+ * @param {number} hRow
+ * @param {number} colIndex
+ * @returns {Array}
+ */
+
+function arrForColNo(sheet, hRow, colIndex){
+  var lColNum  = sheet.getLastColumn();
+  var lColABC  = numCol(lColNum);
+  var lRow     = sheet.getLastRow();
+  var hRange   = sheet.getRange("A" + hRow + ":" + lColABC + hRow);
+  var tColABC  = numCol(colIndex);
+  var rangeObj = sheet.getRange(tColABC + (hRow +1) + ":" + tColABC + lRow);
+  var height   = rangeObj.getHeight();
   var vals     = rangeObj.getValues();
   var arr      = [];
-  for (var i = 0; i < h; i++) {
+  for (var i = 0; i < height; i++) {
       var val  = vals[i][0];
       arr.push(String(val));
   }  
   return arr;
 }
 
-// datestamp
+/**
+ * Returns a string of today's date and the current time formatted "month-day-year hour:minute:second AM/PM"
+ *
+ * @returns {string}
+ */
 
 function fmat12DT() {
   var n = new Date();
   var d = [ n.getMonth() + 1, n.getDate(), n.getYear() ];
-    var t = [ n.getHours(), n.getMinutes(), n.getSeconds() ];
-    var s = ( t[0] < 12 ) ? "AM" : "PM";
+  var t = [ n.getHours(), n.getMinutes(), n.getSeconds() ];
+  var s = ( t[0] < 12 ) ? "AM" : "PM";
   t[0]  = ( t[0] <= 12 ) ? t[0] : t[0] - 12;
   for ( var i = 1; i < 3; i++ ) {
     if ( t[i] < 10 ) {
@@ -304,6 +401,8 @@ function fmat12DT() {
   }
   return d.join("-") + " " + t.join(":") + " " + s;
 }
+
+// script functions
 
 function Scope(sheet, a1Notation) {
   var a1, startCol, startRow, endCol, endRow;
@@ -320,9 +419,9 @@ function Scope(sheet, a1Notation) {
   var split    = a1.split(":");
 
   if (split.length == 2) {
-    startCol = colToNum(split[0].match(/\D/g,'').toString());
+    startCol = colNum(split[0].match(/\D/g,'').toString());
     startRow = parseInt(split[0].match(/\d+/g));
-    endCol = colToNum(split[1].match(/\D/g,'').toString());
+    endCol = colNum(split[1].match(/\D/g,'').toString());
     endRow = parseInt(split[1].match(/\d+/g));
   }
 
@@ -350,7 +449,7 @@ function Scope(sheet, a1Notation) {
 
   this.getA1Notation = function() {
     if (this.endCol >= 1 && this.endRow >= 1) {
-      return numToCol(this.startCol) + this.startRow + ":" + numToCol(this.endCol) + this.endRow;
+      return numCol(this.startCol) + this.startRow + ":" + numCol(this.endCol) + this.endRow;
     }
   };
 } 
@@ -384,7 +483,7 @@ function expandScopeAndExportToCSV(scope, folder, config) {
   var a1 = scope.getA1Notation();
   if (typeof a1 !== "undefined") {
     var range   = scope.sheet.getRange(scope.getA1Notation());
-    var headers = arrheaderVal(range);
+    var headers = headerVal(range);
     var numCols = range.getNumColumns();
     var numRows = range.getLastRow() - 1;
     if (config.removeHeaders) {
